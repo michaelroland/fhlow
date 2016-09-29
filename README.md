@@ -32,16 +32,19 @@ The global configuration consists of four files:
 2. `TimingConstraints.sdc`: This file configures the overall timing constraints
    for your project.
 3. `Paths.bat`: On Windows, this file configures the paths to your simulation and
-   synthesis toolchains. Note that you can modify these paths on a per-user basis
+   synthesis toolchains. Note that you can override these paths on a per-user basis
    using a file `%USERPROFILE%\.fhlow\Paths.bat`. This per-user configuration files is
    automatically created upon running fhlow for the first time.
 4. `Paths.config`: On Linux (or when using the `make` based version of fhlow), this
-   file configures the paths to your simulation and synthesis toolchains.
+   file configures the paths to your simulation and synthesis toolchains It follows
+   GNU make syntax. Note that you can override these paths on a per-user basis using
+   a file `~/.fhlow/Paths.config`. You can simply use a copy of the main `Paths.config`
+   file.
 
 ### Groups
 
 Groups are collections of one or more design units. Each group consists of a
-directory starting with the prefix `grp`, e.g. `grpExample/`.
+directory starting with the prefix `grp`, e.g. `grpExamples/`.
 
 Each group may have two optional configuration files that are used for all
 design-entry units within this group (i.e. these configuration files are only used
@@ -54,17 +57,17 @@ whenever you *start* fhlow for a unit within this group):
 
 Packages encapsulate a single VHDL package. Each package consists of a directory
 starting with the prefix `pkg` located within a group directory, e.g.
-`grpExample/pkgExample1/`. A package has its source files located in a directory
-named `src/` (i.e. `grpExample/pkgExample1/src/`). The name of the source file of
+`grpExamples/pkgExample1/`. A package has its source files located in a directory
+named `src/` (i.e. `grpExamples/pkgExample1/src/`). The name of the source file of
 a package has the form `PackageName-p.vhd`.
 
 ### Units
 
 Units encapsulate a single VHDL entity and its architectures. Each unit consists
 of a directory starting with the prefix `unit` located within a group directory,
-e.g. `grpExample/unitExample2/`. A unit has its source files located in a directory
-named `src/` (i.e. `grpExample/unitExample2/src/`). The names of the source files of
-a unit are as follows:
+e.g. `grpExamples/unitExample2/`. A unit has its source files located in a directory
+named `src/` (i.e. `grpExamples/unitExample2/src/`). The names of the source files
+of a unit are as follows:
 
 - Entity: `UnitName-e.vhd`
 - Architecture: `UnitName-ArchitectureName-a.vhd`
@@ -81,18 +84,18 @@ design-entry:
 2. `TimingConstraints.sdc`: Optional timing constraints that are specific to this unit.
 
 Moreover, when a unit is the design-entry, it must have the fhlow control directory
-(`flw/`, located at `grpExample/unitExample2/flw/`). This directory, in turn, must
+(`flw/`, located at `grpExamples/unitExample2/flw/`). This directory, in turn, must
 contain the control directories for starting the simulation and/or synthesis flow.
 These directories are
 
-- `simQuestasim/` (`grpExample/unitExample2/flw/simQuestasim/`) for simulation using
+- `simQuestasim/` (`grpExamples/unitExample2/flw/simQuestasim/`) for simulation using
   Questasim or Modelsim. This directory further contains
   - Several Windows batch files (`.bat`) for starting the simulation flow on Windows.
   - A `Makefile` for starting the simulation flow on Linux (or on any platform using `make`).
   - A file `Wave.do` for configuraing the waveform recording of the simulator.
 
 
-- `synlayQuartus/` (`grpExample/unitExample2/flw/synlayQuartus/`) for synthesis using
+- `synlayQuartus/` (`grpExamples/unitExample2/flw/synlayQuartus/`) for synthesis using
   Altera Quartus. This directory further contains
   - Several Windows batch files (`.bat`) for starting the synthesis flow on Windows.
   - A `Makefile` for starting the synthesis flow on Linux (or on any platform using `make`).

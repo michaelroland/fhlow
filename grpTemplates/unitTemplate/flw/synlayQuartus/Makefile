@@ -24,7 +24,7 @@
 
 #Paths
 include ../../../../Paths.config
-#include ~/.fhlow/Paths.config
+-include ~/.fhlow/Paths.config
 
 PATHGLOBALSYNDIR = ../../../../flw/synlayQuartus/
 
@@ -38,9 +38,10 @@ main:
 	@echo "Make Targets for Quartus:"
 	@echo "-------------------------"
 	@echo "SynQuartusSh      -> does synthesis with Quartus on you shell"
-	@echo "SynLayQuartusSh   -> does synthesis and place&route with Quartus on your shell"
+	@echo "SynLayQuartusSh   -> does synthesis and place-and-route with Quartus on your shell"
 	@echo "SynQuartusGui     -> does synthesis with Quratus using Quratus' GUI"
-	@echo "SynLayQuartusGui  -> does synthesis and place&route with Quartus using Quartus' GUI"
+	@echo "SynLayQuartusGui  -> does synthesis and place-and-route with Quartus using Quartus' GUI"
+	@echo "clean             -> cleanup synthesis results"
 	@echo ""
 	@echo ""
 
@@ -56,3 +57,5 @@ SynLayQuartusSh:
 SynLayQuartusGui:
 	$(LICENSE) QUARTUS_ROOTDIR=$(QUARTUSDIR) $(QUARTUS_SH) -t $(PATHGLOBALSYNDIR)SynLayGui.tcl
 
+clean:
+	rm -rf synlayResults

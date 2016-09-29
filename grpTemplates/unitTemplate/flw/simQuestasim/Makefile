@@ -24,8 +24,9 @@
 
 #Paths
 include ../../../../Paths.config
-PATHGLOBALSIMDIR = ../../../../flw/simQuestasim/
+-include ~/.fhlow/Paths.config
 
+PATHGLOBALSIMDIR = ../../../../flw/simQuestasim/
 
 #targets
 main:
@@ -38,8 +39,9 @@ main:
 	@echo "--------------------------"
 	@echo "CompQuestasimSh      -> compiles VHDL sources with Questasim using your shell; hit 'q' to quit!"
 	@echo "CompSimQuestasimSh   -> compiles and simulates VHDL sources with Questasim using your shell; hit 'q' to quit!"
-	@echo "CompQuestasimGui     -> compiles VHDL sources with Questasim using Questasims GUI"
-	@echo "CompSimQuestasimGui  -> compiles and simulates VHDL sources with Questasim using Questasims GUI"
+	@echo "CompQuestasimGui     -> compiles VHDL sources with Questasim using Questasim GUI"
+	@echo "CompSimQuestasimGui  -> compiles and simulates VHDL sources with Questasim using Questasim GUI"
+	@echo "clean                 -> cleanup synthesis results"
 	@echo ""
 	@echo ""
 
@@ -55,3 +57,10 @@ CompQuestasimGui:
 CompSimQuestasimGui:
 	$(LICENSE) $(MODELSIM) -do $(PATHGLOBALSIMDIR)CompSim.do
 
+clean:
+	rm -f transcript
+	rm -f *.wlf
+	rm -f *.raw
+	rm -f *.sfk
+	rm -f *.ini
+	rm -rf simComp
