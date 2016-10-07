@@ -33,6 +33,8 @@ rem ****************************************************************************
 rem *******************************************************************************
 rem * Questasim
 set MY_QUESTASIM_PATH=C:\questasim64_10.4c
+set MY_QUESTASIM_EXEC_QUESTASIM=
+set MY_QUESTASIM_EXEC_VSIM=
 rem set MY_QUESTASIM_EXEC_QUESTASIM=%MY_QUESTASIM_PATH%\win64\questasim.exe
 rem set MY_QUESTASIM_EXEC_VSIM=%MY_QUESTASIM_PATH%\win64\vsim.exe
 rem *******************************************************************************
@@ -41,6 +43,8 @@ rem ****************************************************************************
 rem * Quartus
 set QUARTUS_ROOTDIR=C:\altera\16.0\quartus
 set MY_QUARTUS_PATH=%QUARTUS_ROOTDIR%
+set MY_QUARTUS_EXEC_QUARTUS=
+set MY_QUARTUS_EXEC_SH=
 rem set MY_QUARTUS_EXEC_QUARTUS=%MY_QUARTUS_PATH%\bin64\quartus.exe
 rem set MY_QUARTUS_EXEC_SH=%MY_QUARTUS_PATH%\bin64\quartus_sh.exe
 rem *******************************************************************************
@@ -102,21 +106,30 @@ rem *****  Automatic Executable Lookup  ****************************************
 rem *******************************************************************************
 
 rem *******************************************************************************
-rem * Questasim
+rem * Questasim/Modelsim
 rem * 
-if "%MY_QUESTASIM_EXEC_QUESTASIM%" == ""     set MY_QUESTASIM_EXEC_QUESTASIM=%MY_QUESTASIM_PATH%\win64\questasim.exe
+if not "%MY_QUESTASIM_EXEC_QUESTASIM%" == "" goto :skipfindquestasimpath
+set MY_QUESTASIM_EXEC_QUESTASIM=%MY_QUESTASIM_PATH%\win64\questasim.exe
 if not exist "%MY_QUESTASIM_EXEC_QUESTASIM%" set MY_QUESTASIM_EXEC_QUESTASIM=%MY_QUESTASIM_PATH%\win32\questasim.exe
-if "%MY_QUESTASIM_EXEC_VSIM%" == ""     set MY_QUESTASIM_EXEC_VSIM=%MY_QUESTASIM_PATH%\win64\vsim.exe
-if not exist "%MY_QUESTASIM_EXEC_VSIM%" set MY_QUESTASIM_EXEC_VSIM=%MY_QUESTASIM_PATH%\win32\vsim.exe
+if not exist "%MY_QUESTASIM_EXEC_QUESTASIM%" set MY_QUESTASIM_EXEC_QUESTASIM=%MY_QUESTASIM_PATH%\win64aloem\questasim.exe
+if not exist "%MY_QUESTASIM_EXEC_QUESTASIM%" set MY_QUESTASIM_EXEC_QUESTASIM=%MY_QUESTASIM_PATH%\win32aloem\questasim.exe
+if not exist "%MY_QUESTASIM_EXEC_QUESTASIM%" set MY_QUESTASIM_EXEC_QUESTASIM=%MY_QUESTASIM_PATH%\win64\modelsim.exe
+if not exist "%MY_QUESTASIM_EXEC_QUESTASIM%" set MY_QUESTASIM_EXEC_QUESTASIM=%MY_QUESTASIM_PATH%\win32\modelsim.exe
+if not exist "%MY_QUESTASIM_EXEC_QUESTASIM%" set MY_QUESTASIM_EXEC_QUESTASIM=%MY_QUESTASIM_PATH%\win64aloem\modelsim.exe
+if not exist "%MY_QUESTASIM_EXEC_QUESTASIM%" set MY_QUESTASIM_EXEC_QUESTASIM=%MY_QUESTASIM_PATH%\win32aloem\modelsim.exe
+:skipfindquestasimpath
+for %%i in ("%MY_QUESTASIM_EXEC_QUESTASIM%") do set MY_QUESTASIM_EXEC_DIR=%%~dpi
+if "%MY_QUESTASIM_EXEC_VSIM%" == "" set MY_QUESTASIM_EXEC_VSIM=%MY_QUESTASIM_EXEC_DIR%vsim.exe
 rem *******************************************************************************
 
 rem *******************************************************************************
 rem * Quartus
 rem * 
-if "%MY_QUARTUS_EXEC_QUARTUS%" == ""     set MY_QUARTUS_EXEC_QUARTUS=%MY_QUARTUS_PATH%\bin64\quartus.exe
+if not "%MY_QUARTUS_EXEC_QUARTUS%" == "" goto :skipfindquartuspath
+set MY_QUARTUS_EXEC_QUARTUS=%MY_QUARTUS_PATH%\bin64\quartus.exe
 if not exist "%MY_QUARTUS_EXEC_QUARTUS%" set MY_QUARTUS_EXEC_QUARTUS=%MY_QUARTUS_PATH%\bin32\quartus.exe
 if not exist "%MY_QUARTUS_EXEC_QUARTUS%" set MY_QUARTUS_EXEC_QUARTUS=%MY_QUARTUS_PATH%\bin\quartus.exe
-if "%MY_QUARTUS_EXEC_SH%" == ""     set MY_QUARTUS_EXEC_SH=%MY_QUARTUS_PATH%\bin64\quartus_sh.exe
-if not exist "%MY_QUARTUS_EXEC_SH%" set MY_QUARTUS_EXEC_SH=%MY_QUARTUS_PATH%\bin32\quartus_sh.exe
-if not exist "%MY_QUARTUS_EXEC_SH%" set MY_QUARTUS_EXEC_SH=%MY_QUARTUS_PATH%\bin\quartus_sh.exe
+:skipfindquartuspath
+for %%i in ("%MY_QUARTUS_EXEC_QUARTUS%") do set MY_QUARTUS_EXEC_DIR=%%~dpi
+if "%MY_QUARTUS_EXEC_SH%" == "" set MY_QUARTUS_EXEC_SH=%MY_QUARTUS_EXEC_DIR%quartus_sh.exe
 rem *******************************************************************************
