@@ -28,7 +28,7 @@ entity PwrOnReset is
   
   generic (
     gInResetDuration : time := 140 ns;
-    gResetLevel      : std_ulogic := '1');
+    gResetLevel      : std_ulogic := '0');
 
   port (
     onResetAsync : out std_ulogic := gResetLevel);
