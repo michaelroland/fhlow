@@ -23,18 +23,16 @@
 #*******************************************************************************
 
 
-# do synthesis on shell
+# do everything and then start gui
 set PathLocalSynLayDir [pwd]
 set PathLocalSynDir ${PathLocalSynLayDir}/synlayResults
 set PathUnitToRoot ../../../..
-set PathGlobalSynLayDir ${PathLocalSynLayDir}/${PathUnitToRoot}/flw/synlayQuartus/
+set PathGlobalSynLayDir ${PathLocalSynLayDir}/${PathUnitToRoot}/fhlow/synlayQuartus/
 
-set DoLay 0
+set DoLay 1
 
 source ${PathGlobalSynLayDir}/DoIt.tcl
 
-puts "-------------------------------------------------------------"
-puts "everything was sucessfull! press the Enter-Key to continue..."
-puts "-------------------------------------------------------------"
-gets stdin
+#open quartus gui
+exec quartus ${UnitName}
 

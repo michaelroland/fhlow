@@ -23,21 +23,18 @@
 #*******************************************************************************
 
 
-# set Pathes
-set PathLocalSynDir [pwd]
-set PathLocalSynLayDir ${PathLocalSynDir}/../
+# do synthesis on shell
+set PathLocalSynLayDir [pwd]
+set PathLocalSynDir ${PathLocalSynLayDir}/synlayResults
 set PathUnitToRoot ../../../..
-set PathGlobalSynLayDir ${PathLocalSynLayDir}/${PathUnitToRoot}/flw/synlayQuartus/
+set PathGlobalSynLayDir ${PathLocalSynLayDir}/${PathUnitToRoot}/fhlow/synlayQuartus/
 
-#searching for TimingConstraints.sdc on root level
-if [file exists ${PathLocalSynLayDir}/${PathUnitToRoot}/TimingConstraints.sdc] then {
-    source ${PathLocalSynLayDir}/${PathUnitToRoot}/TimingConstraints.sdc
-}
-#searching for TimingConstraints.sdc on group level
-if [file exists ${PathLocalSynLayDir}/../../../TimingConstraints.sdc] then {
-    source ${PathLocalSynLayDir}/../../../TimingConstraints.sdc
-}
-#searching for TimingConstraints.sdc on unit level
-if [file exists ${PathLocalSynLayDir}/../../TimingConstraints.sdc] then {
-    source ${PathLocalSynLayDir}/../../TimingConstraints.sdc
-}
+set DoLay 0
+
+source ${PathGlobalSynLayDir}/DoIt.tcl
+
+puts "-------------------------------------------------------------"
+puts "everything was sucessfull! press the Enter-Key to continue..."
+puts "-------------------------------------------------------------"
+gets stdin
+

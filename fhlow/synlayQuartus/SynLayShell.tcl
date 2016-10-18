@@ -23,22 +23,19 @@
 #*******************************************************************************
 
 
-# we want to compile on shell, so we have to tell other tcl-files
-catch {
-set Shell 1
-set PostSynNetSim 0
-set PostSynSDFSim 1
-
-set PathLocalSimDir .
+# do everything on shell
+set PathLocalSynLayDir [pwd]
+set PathLocalSynDir ${PathLocalSynLayDir}/synlayResults
 set PathUnitToRoot ../../../..
-set PathGlobalSimDir ${PathUnitToRoot}/flw/[file tail [pwd]]
+set PathGlobalSynLayDir ${PathLocalSynLayDir}/${PathUnitToRoot}/fhlow/synlayQuartus/
 
-do ${PathGlobalSimDir}/SecureIncludeConfig.tcl
-    
-#Compile necessary Libraries if not yet compiled!
-do ${PathGlobalSimDir}/CompileManufacturerLibraries.tcl	
+set DoLay 1
 
+source ${PathGlobalSynLayDir}/DoIt.tcl
 
-# compile
-do CompSim.do
-}
+puts "-------------------------------------------------------------"
+puts "everything was sucessfull! press the Enter-Key to continue..."
+puts "-------------------------------------------------------------"
+
+gets stdin
+

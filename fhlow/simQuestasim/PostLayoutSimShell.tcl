@@ -23,19 +23,21 @@
 #*******************************************************************************
 
 
-# do everything on shell
-set PathLocalSynLayDir [pwd]
-set PathLocalSynDir ${PathLocalSynLayDir}/synlayResults
-set PathUnitToRoot ../../../..
-set PathGlobalSynLayDir ${PathLocalSynLayDir}/${PathUnitToRoot}/flw/synlayQuartus/
+# we want to compile in gui, so we have to tell other tcl-files
+catch {
+    set Shell 1
 
-set DoLay 1
+    set PostLayoutSim 1
 
-source ${PathGlobalSynLayDir}/DoIt.tcl
+    set PathLocalSimDir .
+    set PathUnitToRoot ../../../..
+    set PathGlobalSimDir ${PathUnitToRoot}/fhlow/[file tail [pwd]]
 
-puts "-------------------------------------------------------------"
-puts "everything was sucessfull! press the Enter-Key to continue..."
-puts "-------------------------------------------------------------"
+    do ${PathGlobalSimDir}/SecureIncludeConfig.tcl
 
-gets stdin
-
+    #Compile necessary Libraries if not yet compiled!
+    do ${PathGlobalSimDir}/CompileManufacturerLibraries.tcl	
+    
+    # compile
+    do CompSim.do
+}

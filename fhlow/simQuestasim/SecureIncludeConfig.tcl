@@ -30,8 +30,8 @@ catch {
         source ${PathUnitToRoot}/Config.tcl
     }
     #searching for config.tcl on unit level
-    if [file exists ../../../Config.tcl] then {
-        source ../../../Config.tcl
+    if [file exists ${PathLocalSimDir}/../../../Config.tcl] then {
+        source ${PathLocalSimDir}/../../../Config.tcl
     }
     #doing config.tcl in unit
     source ${PathLocalSimDir}/../../Config.tcl

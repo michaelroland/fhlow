@@ -35,7 +35,7 @@ catch {
     
     set PathLocalSimDir .
     set PathUnitToRoot ../../../..
-    set PathGlobalSimDir ${PathUnitToRoot}/flw/[file tail [pwd]]
+    set PathGlobalSimDir ${PathUnitToRoot}/fhlow/[file tail [pwd]]
 
     # compile
     source ${PathGlobalSimDir}/Comp.do

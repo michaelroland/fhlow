@@ -24,13 +24,14 @@
 
 
 # we want to compile in gui, so we have to tell other tcl-files
+
 catch {
-    set PostSynNetSim 1
-    set PostSynSDFSim 0
+    set PostSynNetSim 0
+    set PostSynSDFSim 1
 
     set PathLocalSimDir .
     set PathUnitToRoot ../../../..
-    set PathGlobalSimDir ${PathUnitToRoot}/flw/[file tail [pwd]]
+    set PathGlobalSimDir ${PathUnitToRoot}/fhlow/[file tail [pwd]]
 
     do ${PathGlobalSimDir}/SecureIncludeConfig.tcl
 

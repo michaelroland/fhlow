@@ -29,4 +29,4 @@ call "%CURR_BASE_DIRECTORY%Paths.bat"
 %CURR_SIM_DRIVE%
 cd "%CURR_SIM_DIRECTORY%"
 
-"%MY_QUESTASIM_EXEC_QUESTASIM%" -do ../../../../flw/simQuestasim/CompSim.do
+"%MY_QUESTASIM_EXEC_QUESTASIM%" -do ../../../../fhlow/simQuestasim/CompSim.do

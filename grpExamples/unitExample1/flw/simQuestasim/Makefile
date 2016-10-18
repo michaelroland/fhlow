@@ -26,7 +26,7 @@
 include ../../../../Paths.config
 -include ~/.fhlow/Paths.config
 
-PATHGLOBALSIMDIR = ../../../../flw/simQuestasim/
+PATHGLOBALSIMDIR = ../../../../fhlow/simQuestasim/
 
 #targets
 main:

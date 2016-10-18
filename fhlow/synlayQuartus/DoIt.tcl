@@ -32,7 +32,7 @@ package require ::quartus::flow
 set PathLocalSynLayDir [pwd]
 set PathLocalSynDir ${PathLocalSynLayDir}/synlayResults
 set PathUnitToRoot ../../../..
-set PathGlobalSynLayDir ${PathLocalSynLayDir}/${PathUnitToRoot}/flw/synlayQuartus/
+set PathGlobalSynLayDir ${PathLocalSynLayDir}/${PathUnitToRoot}/fhlow/synlayQuartus/
 
 puts ""
 puts ""

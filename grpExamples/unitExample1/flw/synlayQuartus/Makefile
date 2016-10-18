@@ -26,7 +26,7 @@
 include ../../../../Paths.config
 -include ~/.fhlow/Paths.config
 
-PATHGLOBALSYNDIR = ../../../../flw/synlayQuartus/
+PATHGLOBALSYNDIR = ../../../../fhlow/synlayQuartus/
 
 #targets
 main:

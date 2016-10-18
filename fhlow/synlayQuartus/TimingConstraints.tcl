@@ -23,22 +23,21 @@
 #*******************************************************************************
 
 
-# we want to compile in gui, so we have to tell other tcl-files
+# set Pathes
+set PathLocalSynDir [pwd]
+set PathLocalSynLayDir ${PathLocalSynDir}/../
+set PathUnitToRoot ../../../..
+set PathGlobalSynLayDir ${PathLocalSynLayDir}/${PathUnitToRoot}/fhlow/synlayQuartus/
 
-catch {
-    set PostSynNetSim 0
-    set PostSynSDFSim 1
-
-    set PathLocalSimDir .
-    set PathUnitToRoot ../../../..
-    set PathGlobalSimDir ${PathUnitToRoot}/flw/[file tail [pwd]]
-
-    do ${PathGlobalSimDir}/SecureIncludeConfig.tcl
-
-    
-    #Compile necessary Libraries if not yet compiled!
-    do ${PathGlobalSimDir}/CompileManufacturerLibraries.tcl	
-
-    # compile
-    do CompSim.do
+#searching for TimingConstraints.sdc on root level
+if [file exists ${PathLocalSynLayDir}/${PathUnitToRoot}/TimingConstraints.sdc] then {
+    source ${PathLocalSynLayDir}/${PathUnitToRoot}/TimingConstraints.sdc
+}
+#searching for TimingConstraints.sdc on group level
+if [file exists ${PathLocalSynLayDir}/../../../TimingConstraints.sdc] then {
+    source ${PathLocalSynLayDir}/../../../TimingConstraints.sdc
+}
+#searching for TimingConstraints.sdc on unit level
+if [file exists ${PathLocalSynLayDir}/../../TimingConstraints.sdc] then {
+    source ${PathLocalSynLayDir}/../../TimingConstraints.sdc
 }

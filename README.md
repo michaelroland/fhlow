@@ -19,7 +19,7 @@ entity with one or more architectures).
 ### Core Build Scripts
 
 The heart of fhlow, a collection of common build scripts that automate the simulation
-and synthesis flow is located at `flw/`. There is no need to ever touch this folder
+and synthesis flow is located at `fhlow/`. There is no need to ever touch this folder
 or any of its sub-folders unless you want to enhance and develop the core code of
 fhlow itself.
 

@@ -29,4 +29,4 @@ call "%CURR_BASE_DIRECTORY%Paths.bat"
 %CURR_SYN_DRIVE%
 cd "%CURR_SYN_DIRECTORY%"
 
-"%MY_QUARTUS_EXEC_SH%" -t ..\..\..\..\flw\synlayQuartus\SynShell.tcl
+"%MY_QUARTUS_EXEC_SH%" -t ..\..\..\..\fhlow\synlayQuartus\SynShell.tcl

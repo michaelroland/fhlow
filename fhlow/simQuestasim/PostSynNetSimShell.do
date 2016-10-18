@@ -23,16 +23,23 @@
 #*******************************************************************************
 
 
-# do everything and then start gui
-set PathLocalSynLayDir [pwd]
-set PathLocalSynDir ${PathLocalSynLayDir}/synlayResults
+# we want to compile on shell, so we have to tell other tcl-files
+catch {
+set Shell 1
+set PostLayoutSim 1
+
+	
+set PathLocalSimDir .
 set PathUnitToRoot ../../../..
-set PathGlobalSynLayDir ${PathLocalSynLayDir}/${PathUnitToRoot}/flw/synlayQuartus/
+set PathGlobalSimDir ${PathUnitToRoot}/fhlow/[file tail [pwd]]
 
-set DoLay 1
+do ${PathGlobalSimDir}/SecureIncludeConfig.tcl
 
-source ${PathGlobalSynLayDir}/DoIt.tcl
+    
+#Compile necessary Libraries if not yet compiled!
+do ${PathGlobalSimDir}/CompileManufacturerLibraries.tcl	
 
-#open quartus gui
-exec quartus ${UnitName}
 
+# compile
+do CompSim.do
+}
