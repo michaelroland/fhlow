@@ -3,8 +3,8 @@
 #* environment that speeds up the development of and structures FPGA design
 #* projects.
 #* 
+#* Copyright (c) 2003-2005 Markus Pfaff <markus.pfaff@fh-hagenberg.at>
 #* Copyright (c) 2005 Christian Kitzler <christian.kitzler@fh-hagenberg.at>
-#* Copyright (c) 2005 Markus Pfaff <markus.pfaff@fh-hagenberg.at>
 #* Copyright (c) 2005 Simon Lasselsberger <simon.lasselsberger@fh-hagenberg.at>
 #* Copyright (c) 2011-2016 Michael Roland <michael.roland@fh-hagenberg.at>
 #* 

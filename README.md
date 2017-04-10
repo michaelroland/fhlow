@@ -115,10 +115,10 @@ Find documentation and grab the latest version on GitHub
 
 ## COPYRIGHT
 
+- Copyright (c) 2003-2005 Markus Pfaff <<markus.pfaff@fh-hagenberg.at>>
 - Copyright (c) 2005 Christian Kitzler <<christian.kitzler@fh-hagenberg.at>>
 - Copyright (c) 2005 Simon Lasselsberger <<simon.lasselsberger@fh-hagenberg.at>>
-- Copyright (c) 2005 Markus Pfaff <<markus.pfaff@fh-hagenberg.at>>
-- Copyright (c) 2011-2016 Michael Roland <<michael.roland@fh-hagenberg.at>>
+- Copyright (c) 2011-2017 Michael Roland <<michael.roland@fh-hagenberg.at>>
 
 
 ## DISCLAIMER
