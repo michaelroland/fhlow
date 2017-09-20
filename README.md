@@ -5,8 +5,9 @@ environment that speeds up the development of and structures FPGA design project
 
 
 ## GETTING STARTED
-The directory `grpTemplate/unitTemplate/` contains an empty structure for a design
-unit. See `grmExamples/unitExample1` for a working example.
+The directory [`grpTemplate/unitTemplate/`](grpTemplate/unitTemplate/) contains an
+empty structure for a design unit.
+See [`grpExamples/unitExample1/`](grpExamples/unitExample1/) for a working example.
 
 
 ## STRUCTURE
@@ -19,32 +20,32 @@ entity with one or more architectures).
 ### Core Build Scripts
 
 The heart of fhlow, a collection of common build scripts that automate the simulation
-and synthesis flow, is located at `fhlow/`. There is no need to ever touch this folder
-or any of its sub-folders unless you want to enhance and develop the core code of
-fhlow itself.
+and synthesis flow, is located at [`fhlow/`](fhlow/). There is no need to ever touch
+this folder or any of its sub-folders unless you want to enhance and develop the core
+code of fhlow itself.
 
 ### Global Configuration
 
 The global configuration consists of four files:
 
-1. `Config.tcl`: This is the main configuration file where you set up your overall
-   project configuration.
-2. `TimingConstraints.sdc`: This file configures the overall timing constraints
-   for your project.
-3. `Paths.bat`: On Windows, this file configures the paths to your simulation and
-   synthesis toolchains. Note that you can override these paths on a per-user basis
-   using a file `%USERPROFILE%\.fhlow\Paths.bat`. This per-user configuration files is
-   automatically created upon running fhlow for the first time.
-4. `Paths.config`: On Linux (or when using the `make` based version of fhlow), this
-   file configures the paths to your simulation and synthesis toolchains It follows
-   GNU make syntax. Note that you can override these paths on a per-user basis using
-   a file `~/.fhlow/Paths.config`. You can simply use a copy of the main `Paths.config`
-   file.
+1. [`Config.tcl`](Config.tcl): This is the main configuration file where you set up
+   your overall project configuration.
+2. [`TimingConstraints.sdc`](TimingConstraints.sdc): This file configures the overall
+   timing constraints for your project.
+3. [`Paths.bat`](Paths.bat): On Windows, this file configures the paths to your
+   simulation and synthesis toolchains. Note that you can override these paths on a
+   per-user basis using a file `%USERPROFILE%\.fhlow\Paths.bat`. This per-user
+   configuration file is automatically created upon running fhlow for the first time.
+4. [`Paths.config`](Paths.config): On Linux (or when using the `make` based version
+   of fhlow), this file configures the paths to your simulation and synthesis
+   toolchains. It follows GNU make syntax. Note that you can override these paths on
+   a per-user basis using a file `~/.fhlow/Paths.config`. You can simply use a copy
+   of the main `Paths.config` file.
 
 ### Groups
 
 Groups are collections of one or more design units. Each group consists of a
-directory starting with the prefix `grp`, e.g. `grpExamples/`.
+directory starting with the prefix `grp`, e.g. [`grpExamples/`](grpExamples/).
 
 Each group may have two optional configuration files that are used for all
 design-entry units within this group (i.e. these configuration files are only used
@@ -57,17 +58,19 @@ whenever you *start* fhlow for a unit within this group):
 
 Packages encapsulate a single VHDL package. Each package consists of a directory
 starting with the prefix `pkg` located within a group directory, e.g.
-`grpExamples/pkgExample1/`. A package has its source files located in a directory
-named `src/` (i.e. `grpExamples/pkgExample1/src/`). The name of the source file of
-a package has the form `PackageName-p.vhd`.
+[`grpExamples/pkgExample1/`](grpExamples/pkgExample1/). A package has its source
+files located in a directory named `src/`, e.g.
+[`grpExamples/pkgExample1/src/`](grpExamples/pkgExample1/src/). The name of the
+source file of a package has the form `PackageName-p.vhd`.
 
 ### Units
 
 Units encapsulate a single VHDL entity and its architectures. Each unit consists
 of a directory starting with the prefix `unit` located within a group directory,
-e.g. `grpExamples/unitExample2/`. A unit has its source files located in a directory
-named `src/` (i.e. `grpExamples/unitExample2/src/`). The names of the source files
-of a unit are as follows:
+e.g. [`grpExamples/unitExample1/`](grpExamples/unitExample1/). A unit has its source
+files located in a directory named `src/`, e.g.
+[`grpExamples/unitExample1/src/`](grpExamples/unitExample1/src/). The names of the
+source files of a unit are as follows:
 
 - Entity: `UnitName-e.vhd`
 - Architecture: `UnitName-ArchitectureName-a.vhd`
@@ -80,31 +83,36 @@ When a unit is a design-entry (i.e. when fhlow is to be *started* for this unit)
 the unit may have two configuration files that are used only when this unit is the
 design-entry:
 
-1. `Config.tcl`: Mandatory fhlow configuration for this unit.
-2. `TimingConstraints.sdc`: Optional timing constraints that are specific to this unit.
+1. [`Config.tcl`](grpExamples/unitExample1/Config.tcl): Mandatory fhlow configuration
+   for this unit.
+2. [`TimingConstraints.sdc`](grpExamples/unitExample1/TimingConstraints.sdc): Optional
+   timing constraints that are specific to this unit.
 
 Moreover, when a unit is the design-entry, it must have the fhlow control directory
-(`flw/`, located at `grpExamples/unitExample2/flw/`). This directory, in turn, must
-contain the control directories for starting the simulation and/or synthesis flow.
-These directories are
+(`flw/`, located at [`grpExamples/unitExample1/flw/`](grpExamples/unitExample1/flw/)).
+This directory, in turn, must contain the control directories for starting the
+simulation and/or synthesis flow. These directories are
 
-- `simQuestasim/` (`grpExamples/unitExample2/flw/simQuestasim/`) for simulation using
-  Questasim or Modelsim. This directory further contains
+- `simQuestasim/` ([`grpExamples/unitExample1/flw/simQuestasim/`](grpExamples/unitExample1/flw/simQuestasim/))
+  for simulation using Questasim or Modelsim. This directory further contains
   - Several Windows batch files (`.bat`) for starting the simulation flow on Windows.
-  - A `Makefile` for starting the simulation flow on Linux (or on any platform using `make`).
-  - A file `Wave.do` for configuraing the waveform recording of the simulator.
+  - A [`Makefile`](grpExamples/unitExample1/flw/simQuestasim/Makefile) for starting
+    the simulation flow on Linux (or on any platform using `make`).
+  - A file [`Wave.do`](grpExamples/unitExample1/flw/simQuestasim/Wave.do) for
+    configuraing the waveform recording of the simulator.
 
 
-- `synlayQuartus/` (`grpExamples/unitExample2/flw/synlayQuartus/`) for synthesis using
-  Altera Quartus. This directory further contains
+- `synlayQuartus/` ([`grpExamples/unitExample1/flw/synlayQuartus/`](grpExamples/unitExample1/flw/synlayQuartus/))
+  for synthesis using Altera Quartus/Intel Quartus Prime. This directory further contains
   - Several Windows batch files (`.bat`) for starting the synthesis flow on Windows.
-  - A `Makefile` for starting the synthesis flow on Linux (or on any platform using `make`).
-  - A file `MyAddons.tcl` for defining additional QSF directives that should be used for this
-    unit.
-  - A file `MyPostprocessing.tcl` for defining additional commands that should be executed
-    after synthsis.
-  - An automatically (re-)generated directory `synlayResults/` containing the generated
-    Quartus project files and synthesis results.
+  - A [`Makefile`](grpExamples/unitExample1/flw/synlayQuartus/Makefile) for starting
+    the synthesis flow on Linux (or on any platform using `make`).
+  - A file [`MyAddons.tcl`](grpExamples/unitExample1/flw/synlayQuartus/MyAddons.tcl)
+    for defining additional QSF directives that should be used for this unit.
+  - A file [`MyPostprocessing.tcl`](grpExamples/unitExample1/flw/synlayQuartus/MyPostprocessing.tcl)
+    for defining additional commands that should be executed after synthesis.
+  - An automatically (re-)generated directory `synlayResults/` containing the
+    generated Quartus project files and synthesis results.
 
 
 ## GET LATEST VERSION
