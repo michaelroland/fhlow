@@ -94,6 +94,18 @@ directories are
 - [`simQuestasim/`](grpExamples/unitExample1/flw/simQuestasim/) for simulation using
   Questasim or Modelsim. This directory further contains
   - Several Windows batch files (`.bat`) for starting the simulation flow on Windows.
+    - [`CompSimQuestasimGui.bat`](grpExamples/unitExample1/flw/simQuestasim/CompSimQuestasimGui.bat):
+      Start compilation and simulation of the unit in Questasim/Modelsim GUI.
+    - [`CompSimQuestasimShell.bat`](grpExamples/unitExample1/flw/simQuestasim/CompSimQuestasimShell.bat):
+      Start compilation and simulation of the unit in Questasim/Modelsim shell.
+    - [`CompQuestasimGui.bat`](grpExamples/unitExample1/flw/simQuestasim/CompQuestasimGui.bat):
+      Start compilation of the unit without simulation in Questasim/Modelsim GUI.
+    - [`CompQuestasimShell.bat`](grpExamples/unitExample1/flw/simQuestasim/CompQuestasimShell.bat):
+      Start compilation of the unit without simulation in Questasim/Modelsim shell.
+    - [`QuestasimGui.bat`](grpExamples/unitExample1/flw/simQuestasim/QuestasimGui.bat):
+      Start Questasim/Modelsim GUI.
+    - [`CleanupSimDir.bat`](grpExamples/unitExample1/flw/simQuestasim/CleanupSimDir.bat):
+      Cleanup the generated simulation output files.
   - A [`Makefile`](grpExamples/unitExample1/flw/simQuestasim/Makefile) for starting
     the simulation flow on Linux (or on any platform using `make`).
   - A file [`Wave.do`](grpExamples/unitExample1/flw/simQuestasim/Wave.do) for
@@ -103,6 +115,18 @@ directories are
 - [`synlayQuartus/`](grpExamples/unitExample1/flw/synlayQuartus/) for synthesis using
   Altera Quartus/Intel Quartus Prime. This directory further contains
   - Several Windows batch files (`.bat`) for starting the synthesis flow on Windows.
+    - [`SynLayQuartusGui.bat`](grpExamples/unitExample1/flw/synlayQuartus/SynLayQuartusGui.bat):
+      Start full design compilation in Quartus GUI.
+    - [`SynLayQuartusShell.bat`](grpExamples/unitExample1/flw/synlayQuartus/SynLayQuartusShell.bat):
+      Start full design compilation in Quartus shell.
+    - [`SynQuartusGui.bat`](grpExamples/unitExample1/flw/synlayQuartus/SynQuartusGui.bat):
+      Start analysis and synthesis in Quartus GUI.
+    - [`SynQuartusShell.bat`](grpExamples/unitExample1/flw/synlayQuartus/SynQuartusShell.bat):
+      Start analysis and synthesis in Quartus shell.
+    - [`QuartusGui.bat`](grpExamples/unitExample1/flw/synlayQuartus/QuartusGui.bat):
+      Start Quartus GUI.
+    - [`CleanupSynDir.bat`](grpExamples/unitExample1/flw/synlayQuartus/CleanupSynDir.bat):
+      Cleanup the generated synthesis output files.
   - A [`Makefile`](grpExamples/unitExample1/flw/synlayQuartus/Makefile) for starting
     the synthesis flow on Linux (or on any platform using `make`).
   - A file [`MyAddons.tcl`](grpExamples/unitExample1/flw/synlayQuartus/MyAddons.tcl)
@@ -111,6 +135,12 @@ directories are
     for defining additional commands that should be executed after synthesis.
   - An automatically (re-)generated directory `synlayResults/` containing the
     generated Quartus project files and synthesis results.
+
+### Additional Tools
+
+- [`MapPathToDrive.bat`](MapPathToDrive.bat): Maps the project directory to a
+  dedicated drive letter on Windows. This may be necessary for some projects due to
+  issues in Quartus that may cause relative paths to exceed maximum lengths.
 
 
 ## GET LATEST VERSION
