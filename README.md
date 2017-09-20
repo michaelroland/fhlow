@@ -59,18 +59,16 @@ whenever you *start* fhlow for a unit within this group):
 Packages encapsulate a single VHDL package. Each package consists of a directory
 starting with the prefix `pkg` located within a group directory, e.g.
 [`grpExamples/pkgExample1/`](grpExamples/pkgExample1/). A package has its source
-files located in a directory named `src/`, e.g.
-[`grpExamples/pkgExample1/src/`](grpExamples/pkgExample1/src/). The name of the
-source file of a package has the form `PackageName-p.vhd`.
+files located in a directory named [`src/`](grpExamples/pkgExample1/src/). The name
+of the source file of a package has the form `PackageName-p.vhd`.
 
 ### Units
 
 Units encapsulate a single VHDL entity and its architectures. Each unit consists
 of a directory starting with the prefix `unit` located within a group directory,
 e.g. [`grpExamples/unitExample1/`](grpExamples/unitExample1/). A unit has its source
-files located in a directory named `src/`, e.g.
-[`grpExamples/unitExample1/src/`](grpExamples/unitExample1/src/). The names of the
-source files of a unit are as follows:
+files located in a directory named [`src/`](grpExamples/unitExample1/src/). The
+names of the source files of a unit are as follows:
 
 - Entity: `UnitName-e.vhd`
 - Architecture: `UnitName-ArchitectureName-a.vhd`
@@ -89,12 +87,12 @@ design-entry:
    timing constraints that are specific to this unit.
 
 Moreover, when a unit is the design-entry, it must have the fhlow control directory
-(`flw/`, located at [`grpExamples/unitExample1/flw/`](grpExamples/unitExample1/flw/)).
-This directory, in turn, must contain the control directories for starting the
-simulation and/or synthesis flow. These directories are
+([`flw/`](grpExamples/unitExample1/flw/)). This directory, in turn, must contain the
+control directories for starting the simulation and/or synthesis flow. These
+directories are
 
-- `simQuestasim/` ([`grpExamples/unitExample1/flw/simQuestasim/`](grpExamples/unitExample1/flw/simQuestasim/))
-  for simulation using Questasim or Modelsim. This directory further contains
+- [`simQuestasim/`](grpExamples/unitExample1/flw/simQuestasim/) for simulation using
+  Questasim or Modelsim. This directory further contains
   - Several Windows batch files (`.bat`) for starting the simulation flow on Windows.
   - A [`Makefile`](grpExamples/unitExample1/flw/simQuestasim/Makefile) for starting
     the simulation flow on Linux (or on any platform using `make`).
@@ -102,8 +100,8 @@ simulation and/or synthesis flow. These directories are
     configuraing the waveform recording of the simulator.
 
 
-- `synlayQuartus/` ([`grpExamples/unitExample1/flw/synlayQuartus/`](grpExamples/unitExample1/flw/synlayQuartus/))
-  for synthesis using Altera Quartus/Intel Quartus Prime. This directory further contains
+- [`synlayQuartus/`](grpExamples/unitExample1/flw/synlayQuartus/) for synthesis using
+  Altera Quartus/Intel Quartus Prime. This directory further contains
   - Several Windows batch files (`.bat`) for starting the synthesis flow on Windows.
   - A [`Makefile`](grpExamples/unitExample1/flw/synlayQuartus/Makefile) for starting
     the synthesis flow on Linux (or on any platform using `make`).
