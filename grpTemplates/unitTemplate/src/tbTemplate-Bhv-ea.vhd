@@ -3,7 +3,7 @@
 -- environment that speeds up the development of and structures FPGA design
 -- projects.
 -- 
--- Copyright (c) 2011-2016 Michael Roland <michael.roland@fh-hagenberg.at>
+-- Copyright (c) 2011-2017 Michael Roland <michael.roland@fh-hagenberg.at>
 -- 
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -20,12 +20,13 @@
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
--- Title      : <Short title for this testbench>
--- Project    : <Name of the design project>
+-- Title       : <Short title for this testbench>
+-- Project     : <Name of the design project>
 --------------------------------------------------------------------------------
--- RevCtrl    : $Id$
+-- RevCtrl     : $Id$
+-- Authors     : <Names of authors of this file>
 --------------------------------------------------------------------------------
--- Description: <Detailed description of this testbench's purpose>
+-- Description : <Detailed description of this testbench's purpose>
 --------------------------------------------------------------------------------
 
 library ieee;
