@@ -70,7 +70,7 @@ begin  -- architecture Bhv
   PwrOnResetSource : entity work.PwrOnReset
     generic map (
       gInResetDuration => cInResetDuration,
-      gResetLevel      => cnActivated)
+      gResetLevel      => '0')
     port map (
       onResetAsync => nResetAsync);
 

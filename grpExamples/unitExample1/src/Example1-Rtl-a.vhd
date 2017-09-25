@@ -34,14 +34,14 @@ begin  -- architecture Rtl
 
   Count : process (iClk, inResetAsync) is
   begin
-    if (inResetAsync = cnActivated) then
+    if (inResetAsync = '0') then
       ClkCounter <= (others => '0');
       Counter0 <= 0;
       Counter1 <= 0;
       Seg0 <= cSEGOff;
       Seg1 <= cSEGOff;
 
-    elsif (rising_edge(iClk)) then  -- rising clock edge
+    elsif rising_edge(iClk) then  -- rising clock edge
       if (ClkCounter = cClkCycPerCyc) then
         ClkCounter <= (others => '0');
 

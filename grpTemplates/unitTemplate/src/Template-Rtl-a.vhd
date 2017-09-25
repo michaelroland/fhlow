@@ -54,7 +54,7 @@ begin
   begin
     if (inResetAsync = '0') then
       R <= cRinitVal;
-    elsif (rising_edge(iClk)) then  -- rising clock edge
+    elsif rising_edge(iClk) then  -- rising clock edge
       R <= NextR;  
     end if;
   end process;
