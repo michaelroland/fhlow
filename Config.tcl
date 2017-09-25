@@ -431,16 +431,16 @@ append Pins {
 #
 ## GPIO_1
 #append Pins {
-#    {GPIO_1[0]  AA21 0 "3.3-V LVTTL"}
-#    {GPIO_1[1]  AB21 0 "3.3-V LVTTL"}
-#    {GPIO_1[2]  AC23 0 "3.3-V LVTTL"}
-#    {GPIO_1[3]  AD24 0 "3.3-V LVTTL"}
-#    {GPIO_1[4]  AE23 0 "3.3-V LVTTL"}
-#    {GPIO_1[5]  AE24 0 "3.3-V LVTTL"}
-#    {GPIO_1[6]  AF25 0 "3.3-V LVTTL"}
-#    {GPIO_1[7]  AF26 0 "3.3-V LVTTL"}
-#    {GPIO_1[8]  AG25 0 "3.3-V LVTTL"}
-#    {GPIO_1[9]  AB17 0 "3.3-V LVTTL"}
+#    {GPIO_1[0]  AB17 0 "3.3-V LVTTL"}
+#    {GPIO_1[1]  AA21 0 "3.3-V LVTTL"}
+#    {GPIO_1[2]  AB21 0 "3.3-V LVTTL"}
+#    {GPIO_1[3]  AC23 0 "3.3-V LVTTL"}
+#    {GPIO_1[4]  AD24 0 "3.3-V LVTTL"}
+#    {GPIO_1[5]  AE23 0 "3.3-V LVTTL"}
+#    {GPIO_1[6]  AE24 0 "3.3-V LVTTL"}
+#    {GPIO_1[7]  AF25 0 "3.3-V LVTTL"}
+#    {GPIO_1[8]  AF26 0 "3.3-V LVTTL"}
+#    {GPIO_1[9]  AG25 0 "3.3-V LVTTL"}
 #    {GPIO_1[10] AG26 0 "3.3-V LVTTL"}
 #    {GPIO_1[11] AH24 0 "3.3-V LVTTL"}
 #    {GPIO_1[12] AH27 0 "3.3-V LVTTL"}
