@@ -23,120 +23,106 @@
 #*******************************************************************************
 
 
-catch {
-    #setting the paths for files and tools
+puts ""
+puts ""
+puts "--------------------------------------------------------------------------------"
+puts "    Begin script for Questasim."
+puts "--------------------------------------------------------------------------------"
+puts ""
 
-    puts ""
-    puts ""
-    puts "--------------------------------------------------------------------------------"
-    puts "    Begin script for Questasim."
-    puts "--------------------------------------------------------------------------------"
-    puts ""
-    
-    set PathLocalSimDir .
-    set PathUnitToRoot ../../../..
-    set PathGlobalSimDir ${PathUnitToRoot}/fhlow/[file tail [pwd]]
+#setting the paths for files and tools
 
-    # compile
-    source ${PathGlobalSimDir}/Comp.do
+set PathLocalSimDir .
+set PathUnitToRoot ../../../..
+set PathGlobalSimDir ${PathUnitToRoot}/fhlow/[file tail [pwd]]
 
-    # look if we had an error on compiling with current configuration
-    if [expr $ConfigError] then {
-        do ${PathGlobalSimDir}/UnsetVariables.tcl
-    } else {
+if {1 == [catch {
+	source ${PathGlobalSimDir}/../Banner.tcl
+	puts ""
+	puts ""
 
-        # compilation worked fine
-        source ${PathLocalSimDir}/../../Config.tcl
-        if [expr $tbSuccess] then {
-            
-            if [expr ! [info exists UnitName]] then {
-                set UnitName IdoNotExist
-            }
-            
-            
-            if [info exists PostLayoutSim] {
-                if [file exists ${PathLocalSimDir}/../../src/${UnitName}.sdf] then {
-                    puts ""
-                    puts "---------- start of simulation (using delay information form SDF file) ---------"
-                    puts ""
-                    
-                    vsim -quiet ${VsimOptions} -sdfmax /DUT=[file normalize ${PathLocalSimDir}/../../src/${UnitName}.sdf] -noglitch -t ps work.tb${tbName}
-                    source ${PathLocalSimDir}/Wave.do
-                    
-                    set DurationBegin [clock seconds]
-                    source ${PathGlobalSimDir}/RunSim.do
-                    
-                    puts ""
-                    puts "----------- end of simulation (using delay information form SDF file) ----------"
-                    puts ""
-                    puts ""
-                } else {
-                    puts "no sdf file found"
-                }
-            } else {
+	source ${PathGlobalSimDir}/SecureIncludeConfig.tcl
 
-                puts ""
-                puts "---------------------------- start of simulation -------------------------------"
-                puts ""
+	puts "---------------------------- start of compilation ------------------------------"
 
-                # simulate either with custom Wave.do
-                # or with default Wave.do
-                if [file exists ${PathLocalSimDir}/Wave.do] then {
-                    vsim -quiet ${VsimOptions} work.tb${tbName}
-                    source ${PathLocalSimDir}/Wave.do
-                    
-                    set DurationBegin [clock seconds]
-                    source ${PathGlobalSimDir}/RunSim.do
-                    
-                } else {
-                    vsim -quiet ${VsimOptions} work.tb${tbName}
-                    source ${PathGlobalSimDir}/Wave.do
-                    
-                    set DurationBegin [clock seconds]
-                    source ${PathGlobalSimDir}/RunSim.do
-                }
-                
-                puts ""
-                puts "----------------------------- end of simulation --------------------------------"
-                puts ""
-                puts ""
-                
-            }	
-            
-            set DurationEnd [clock seconds]
-            set Duration [expr ${DurationEnd} - ${DurationBegin}]
-            
-            if [info exists Shell] then {
-                puts "Duration of Simulation: ${Duration} sec"
-                
-            } else {		
-                # Display Simulation Duration in a MessageBox
-                tk_messageBox -message "${Duration} sec                                     " \
-                    -title "Duration of Simulation" 
-            }
-            
-        } else {
-            # tell user that something went wrong with his testbench
-            if [info exists Shell] then {
-                puts "Specified Testbench was not found!"
-                puts "Check Config.tcl!" 
-                puts "Can't Simulate!"
-            } else {
-                tk_messageBox -message "Specified Testbench was not found!\nCheck Config.tcl!\nCan't Simulate!" \
-                    -title "Testbench Warning" -icon warning
-            }
-        }
-        # unset tcl variables
-        source $PathGlobalSimDir/UnsetVariables.tcl
-    }
-    
-    puts ""
-    puts ""
-    puts "--------------------------------------------------------------------------------"
-    puts "    End of script for Questasim."
-    puts "--------------------------------------------------------------------------------"
-    puts ""
-    puts ""
-    
-    #exit
+	source ${PathGlobalSimDir}/CompileVhdlSource.do
+
+	puts "----------------------------- end of compilation -------------------------------"
+	puts ""
+	puts ""
+	# compilation worked fine
+	
+	if [expr $tbSuccess] then {
+		if [expr ! [info exists UnitName]] then {
+			set UnitName IdoNotExist
+		}
+		
+		puts ""
+		puts "---------------------------- start of simulation -------------------------------"
+		puts ""
+		if [info exists PostLayoutSim] {
+			if [file exists ${PathLocalSimDir}/../../src/${UnitName}.sdf] then {
+				puts "Using delay information from SDF file [file normalize ${PathLocalSimDir}/../../src/${UnitName}.sdf] ..."
+				puts ""
+				vsim -quiet ${VsimOptions} -sdfmax /DUT=[file normalize ${PathLocalSimDir}/../../src/${UnitName}.sdf] -noglitch -t ps work.tb${tbName}
+			} else {
+				error "SDF file [file normalize ${PathLocalSimDir}/../../src/${UnitName}.sdf] not found!"
+			}
+		} else {
+			vsim -quiet ${VsimOptions} work.tb${tbName}
+		}
+			
+		# simulate either with custom Wave.do
+		# or with default Wave.do
+		if [file exists ${PathLocalSimDir}/Wave.do] then {
+			if {1 == [catch {
+				source ${PathLocalSimDir}/Wave.do
+			} err]} {
+				error "Failed to include waveform configuration file [file normalize ${PathLocalSimDir}/Wave.do]!\n$err"
+			}
+		} else {
+			puts stderr "Warning: [file normalize ${PathLocalSimDir}/Wave.do] not found. Using default Wave.do ..."
+			if {1 == [catch {
+				source ${PathGlobalSimDir}/Wave.do
+			} err]} {
+				error "Failed to include waveform configuration file [file normalize ${PathGlobalSimDir}/Wave.do]!\n$err"
+			}
+		}
+		
+		set DurationBegin [clock seconds]
+		source ${PathGlobalSimDir}/RunSim.do
+		
+		puts ""
+		puts "----------------------------- end of simulation --------------------------------"
+		puts ""
+		puts ""
+		
+		set DurationEnd [clock seconds]
+		set Duration [expr ${DurationEnd} - ${DurationBegin}]
+		
+		puts "Duration of Simulation: ${Duration} sec"
+	} else {
+		# tell user that something went wrong with their testbench
+		error "Failed to start simulation!\nSpecified Testbench was not found!\nCheck your configuration!"
+	}
+	
+	puts ""
+	puts ""
+	puts "--------------------------------------------------------------------------------"
+	puts "    End of script for Questasim."
+	puts "--------------------------------------------------------------------------------"
+	puts ""
+	puts ""
+} err]} {
+	puts ""
+	puts ""
+	puts stderr "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+	puts stderr ""
+	puts stderr "$err"
+	puts stderr ""
+	puts stderr "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+}
+
+if [info exists Shell] then {
+	exit
 }

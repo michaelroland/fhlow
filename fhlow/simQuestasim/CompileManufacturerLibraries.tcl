@@ -28,43 +28,48 @@ puts "   Begin post-synthesis manufacturer libraries handling."
 puts "--------------------------------------------------------------------------------"
 puts ""
 
-if [expr [file exists ${PathUnitToRoot}/lib/lib${ChipManufacturer}/ConfigLib.tcl]] {
-    catch { source ${PathUnitToRoot}/lib/lib${ChipManufacturer}/ConfigLib.tcl}
-} else {
-    puts "~~~~~~~~~~~~~~~~ Error ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    puts "~~ There is something wrong with your post-synthesis library! ~~"
-    puts "~~ <fhlowroot>/lib/lib${ChipManufacturer}/ConfigLib.tcl       ~~"
-    puts "~~ not found.                                                 ~~"
-    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    exit
-    return -1;
+set CurrentConfigIncludeFile ${PathUnitToRoot}/lib/lib${ChipManufacturer}/ConfigLib.tcl
+if {1 == [catch {
+    if [expr [file exists $CurrentConfigIncludeFile]] {
+        source $CurrentConfigIncludeFile
+    } else {
+        error "Post-synthesis library configuration file [file normalize $CurrentConfigIncludeFile] not found!"
+    }
+} err]} {
+    error "Failed to include post-synthesis library configuration file [file normalize $CurrentConfigIncludeFile]!\n$err"
 }
 
+set comperror ""
 foreach {Lib} $LibFiles {
     set LibName [lindex $Lib 0]
     set Files [lindex $Lib 1]
 
-    
     if [expr ![file exists ${PathGlobalSimDir}/simComp/${LibName}]] then {
-        
         vlib ${PathGlobalSimDir}/simComp/${LibName}
         vmap ${LibName} ${PathGlobalSimDir}/simComp/${LibName}
         
         puts "---------------------------- start of compilation ------------------------------"
         foreach {File} $Files {
-            puts "Compiling    library file                                   $LibName, $File"
-            catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibName} [file normalize ${PathUnitToRoot}/lib/lib${ChipManufacturer}/src/$File]" comperror
+            if {1 == [catch {
+                puts "Compiling    library file                                   $LibName, $File"
+                eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibName} [file normalize ${PathUnitToRoot}/lib/lib${ChipManufacturer}/src/$File]"
+            } err]} {
+                set comperror "$err"
+            }
         }
         puts "----------------------------- end of compilation -------------------------------"
-        puts ""
-        puts ""
     } else {
-        
         puts "--------------------------------------------------------------------------------"
-        puts "-- There is no need to compile ${LibName}, <fhlowroot>/flw/simQuestasim/simComp/${LibName} exists!"
+        puts "-- There is no need to compile ${LibName}, <fhlowroot>/fhlow/simQuestasim/simComp/${LibName} exists!"
         puts "-- If you want to renew this library, you have to delete the directory containing the library."
         puts "--------------------------------------------------------------------------------"
     }
+    puts ""
+    puts ""
+}
+
+if [expr  {${comperror}!=""}] then {
+    error "Post-synthesis library compilation failed due to errors!\n$comperror"
 }
 
 puts ""

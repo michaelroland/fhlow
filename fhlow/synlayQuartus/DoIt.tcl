@@ -27,6 +27,8 @@
 package require ::quartus::project
 # Load Quartus II Tcl Flow package
 package require ::quartus::flow
+# Load Quartus II Tcl Misc package
+package require ::quartus::misc
 
 # set Pathes
 set PathLocalSynLayDir [pwd]
@@ -34,59 +36,79 @@ set PathLocalSynDir ${PathLocalSynLayDir}/synlayResults
 set PathUnitToRoot ../../../..
 set PathGlobalSynLayDir ${PathLocalSynLayDir}/${PathUnitToRoot}/fhlow/synlayQuartus/
 
-puts ""
-puts ""
-source ${PathGlobalSynLayDir}/../Banner.tcl
-puts ""
-puts ""
+if {1 == [catch {
+    puts ""
+    puts ""
+    source ${PathGlobalSynLayDir}/../Banner.tcl
+    puts ""
+    puts ""
 
-set DoingSynthesis 0
+    set DoingSynthesis 0
 
-# Packages, Units, Definitions for your Design will be read!
-source ${PathGlobalSynLayDir}/SecureIncludeConfig.tcl
+    # Packages, Units, Definitions for your Design will be read!
+    source ${PathGlobalSynLayDir}/SecureIncludeConfig.tcl
 
-#delete Synthesis Directory
-while {[file exists ${PathLocalSynDir}]} {
-    set err ""
-    if {[catch "file delete -force ${PathLocalSynDir}" err]} {
-        puts ""
-        puts "Failed to delete synthesis results folder at \"${PathLocalSynDir}\""
-        puts "${err}"
+    #delete Synthesis Directory
+    while {[file exists ${PathLocalSynDir}]} {
+        set err ""
+        if {[catch "file delete -force ${PathLocalSynDir}" err]} {
+            puts ""
+            puts "Failed to delete synthesis results folder at \"${PathLocalSynDir}\""
+            puts "${err}"
+        }
+        after 1000
     }
-    after 1000
-}
-#Make Synthesis Directory
-file mkdir ${PathLocalSynDir}
-cd ${PathLocalSynDir}
+    #Make Synthesis Directory
+    file mkdir ${PathLocalSynDir}
+    cd ${PathLocalSynDir}
 
-#Search for TopLevelEntity-Name
-source ${PathGlobalSynLayDir}/SearchUnitName.tcl
+    #Search for TopLevelEntity-Name
+    source ${PathGlobalSynLayDir}/SearchUnitName.tcl
 
-#create new project
-source ${PathGlobalSynLayDir}/SetupProject.tcl
-# add vhdl files to project
-source ${PathGlobalSynLayDir}/AnalyzeVhdlSources.tcl
-# handling Technology
-source ${PathGlobalSynLayDir}/ReadTechnology.tcl
-# setting synthesis constraints
-source ${PathGlobalSynLayDir}/SynConstraints.tcl
-# do whatever user wants to do before compilation
-if [file exists ${PathLocalSynLayDir}/MyAddons.tcl] then {
-    source ${PathLocalSynLayDir}/MyAddons.tcl
-}
+    #create new project
+    source ${PathGlobalSynLayDir}/SetupProject.tcl
+    # add vhdl files to project
+    source ${PathGlobalSynLayDir}/AnalyzeVhdlSources.tcl
+    # handling Technology
+    source ${PathGlobalSynLayDir}/ReadTechnology.tcl
+    # setting synthesis constraints
+    source ${PathGlobalSynLayDir}/SynConstraints.tcl
+    # do whatever user wants to do before compilation
+    if [file exists ${PathLocalSynLayDir}/MyAddons.tcl] then {
+        if {1 == [catch {
+            source ${PathLocalSynLayDir}/MyAddons.tcl
+        } err]} {
+            error "Failed to include add-ons configuration [file normalize ${PathLocalSynLayDir}/MyAddons.tcl]!\n$err"
+        }
+    }
 
-export_assignments
-if [expr ${DoLay}] {
-    # Analyze, Synthesis, Place and Route
-    source ${PathGlobalSynLayDir}/PlaceAndRoute.tcl
-} else {
-    # Analyze and Synthesis
-    source ${PathGlobalSynLayDir}/TranslateRtl.tcl
-}
+    export_assignments
+    if [expr ${DoLay}] {
+        # Analyze, Synthesis, Place and Route
+        source ${PathGlobalSynLayDir}/PlaceAndRoute.tcl
+    } else {
+        # Analyze and Synthesis
+        source ${PathGlobalSynLayDir}/TranslateRtl.tcl
+    }
 
-# do whatever user wants to do after compilation
-if [file exists ${PathLocalSynLayDir}/MyPostprocessing.tcl] then {
-    source ${PathLocalSynLayDir}/MyPostprocessing.tcl
+    # do whatever user wants to do after compilation
+    if [file exists ${PathLocalSynLayDir}/MyPostprocessing.tcl] then {
+        if {1 == [catch {
+            source ${PathLocalSynLayDir}/MyPostprocessing.tcl
+        } err]} {
+            error "Failed to include postprocessing script [file normalize ${PathLocalSynLayDir}/MyPostprocessing.tcl]!\n$err"
+        }
+    }
+} err]} {
+	puts ""
+	puts ""
+	puts stderr "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+	puts stderr ""
+	puts stderr "$err"
+	puts stderr ""
+	puts stderr "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    qexit -error
+	exit 1
 }
 
 # Close project

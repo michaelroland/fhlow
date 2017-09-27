@@ -23,94 +23,89 @@
 #*******************************************************************************
 
 
-catch {
+source ${PathGlobalSimDir}/UnsetVariables.tcl
+
+set CurrentConfigIncludeFile ""
+if {1 == [catch {
+    #searching for config.tcl on root level
+    set CurrentConfigIncludeFile ${PathUnitToRoot}/Config.tcl
+    if [file exists $CurrentConfigIncludeFile] then {
+        source $CurrentConfigIncludeFile
+    }
     #searching for config.tcl on group level
-    if [file exists ${PathUnitToRoot}/Config.tcl] then {
-        set DoingSynthesis 0
-        source ${PathUnitToRoot}/Config.tcl
+    set CurrentConfigIncludeFile ${PathLocalSimDir}/../../../Config.tcl
+    if [file exists $CurrentConfigIncludeFile] then {
+        source $CurrentConfigIncludeFile
     }
     #searching for config.tcl on unit level
-    if [file exists ${PathLocalSimDir}/../../../Config.tcl] then {
-        source ${PathLocalSimDir}/../../../Config.tcl
-    }
-    #doing config.tcl in unit
-    source ${PathLocalSimDir}/../../Config.tcl
-
-    # VHDL input version
-    if [expr ![info exists VhdlInputVersion]] then {
-        set VhdlInputVersion 1993
-    }
-    
-    set VcomVhdlInputVersion "-93"
-    if { ${VhdlInputVersion} == 1987 } then {
-        set VcomVhdlInputVersion "-87"
-    } elseif { ${VhdlInputVersion} == 87 } then {
-        set VcomVhdlInputVersion "-87"
-    } elseif { ${VhdlInputVersion} == 1993 } then {
-        set VcomVhdlInputVersion "-93"
-    } elseif { ${VhdlInputVersion} == 93 } then {
-        set VcomVhdlInputVersion "-93"
-    } elseif { ${VhdlInputVersion} == 2002 } then {
-        set VcomVhdlInputVersion "-2002"
-    } elseif { ${VhdlInputVersion} == 2008 } then {
-        set VcomVhdlInputVersion "-2008"
-    #} elseif { ${VhdlInputVersion} == 2012 } then {
-    #    set VcomVhdlInputVersion "-2012"
+    set CurrentConfigIncludeFile ${PathLocalSimDir}/../../Config.tcl
+    if [file exists $CurrentConfigIncludeFile] then {
+        source $CurrentConfigIncludeFile
     } else {
-        puts "VhdlInputVersion: Version \"${VhdlInputVersion}\" not supported!"
-        after 5000
-        exit
+        error "Configuration file [file normalize $CurrentConfigIncludeFile] not found!"
     }
+} err]} {
+    error "Failed to include configuration file [file normalize $CurrentConfigIncludeFile]!\n$err"
+}
+
+# VHDL input version
+if [expr ![info exists VhdlInputVersion]] then {
+    set VhdlInputVersion 1993
+}
+
+set VcomVhdlInputVersion "-93"
+if { ${VhdlInputVersion} == 1987 } then {
+    set VcomVhdlInputVersion "-87"
+} elseif { ${VhdlInputVersion} == 87 } then {
+    set VcomVhdlInputVersion "-87"
+} elseif { ${VhdlInputVersion} == 1993 } then {
+    set VcomVhdlInputVersion "-93"
+} elseif { ${VhdlInputVersion} == 93 } then {
+    set VcomVhdlInputVersion "-93"
+} elseif { ${VhdlInputVersion} == 2002 } then {
+    set VcomVhdlInputVersion "-2002"
+} elseif { ${VhdlInputVersion} == 2008 } then {
+    set VcomVhdlInputVersion "-2008"
+#} elseif { ${VhdlInputVersion} == 2012 } then {
+#    set VcomVhdlInputVersion "-2012"
+} else {
+    error "VhdlInputVersion \"${VhdlInputVersion}\" is not a supported version!"
+}
 
 
-    #Check if Config.tcl's are correct
+#Check if Config.tcl's are correct
 
-    # Verify that Variable Packages exists
-    if [expr ![info exists Packages]] then {
-        puts "Packages: Variable Packages does not exist in your Config.tcl!"
-        after 5000
-        exit
-    }
+# Verify that Variable Packages exists
+if [expr ![info exists Packages]] then {
+    error "Variable Packages does not exist in your Config.tcl!"
+}
 
-    # Verify that Variable Units exists
-    if [expr ![info exists Units]] then {
-        puts "Units: Variable Units does not exist in your Config.tcl!"
-        after 5000
-        exit
-    }
+# Verify that Variable Units exists
+if [expr ![info exists Units]] then {
+    error "Variable Units does not exist in your Config.tcl!"
+}
 
-    # Verify that Variable ForeignUnits exists
-    if [expr ![info exists ForeignUnits]] then {
-        puts "ForeignUnits: Variable ForeignUnits does not exist in your Config.tcl!"
-        after 5000
-        exit
-    }
+# Verify that Variable ForeignUnits exists
+if [expr ![info exists ForeignUnits]] then {
+    error "Variable ForeignUnits does not exist in your Config.tcl!"
+}
 
-    # Verify that Variable BhvUnits exists
-    if [expr ![info exists BhvUnits]] then {
-        puts "BhvUnits: Variable ForeignUnits does not exist in your Config.tcl!"
-        after 5000
-        exit
-    }
+# Verify that Variable BhvUnits exists
+if [expr ![info exists BhvUnits]] then {
+    error "Variable ForeignUnits does not exist in your Config.tcl!"
+}
 
-    # Verify that Variable ForeignTbUnits exists
-    if [expr ![info exists ForeignTbUnits]] then {
-        puts "ForeignUnits: Variable ForeignTbUnits does not exist in your Config.tcl!"
-        after 5000
-        exit
-    }
+# Verify that Variable ForeignTbUnits exists
+if [expr ![info exists ForeignTbUnits]] then {
+    error "Variable ForeignTbUnits does not exist in your Config.tcl!"
+}
 
-    # Verify that Variable tbUnits exists
-    if [expr ![info exists tbUnits]] then {
-        puts "tbUnits: Variable tbUnits does not exist in your Config.tcl!"
-        after 5000
-        exit
-    }
+# Verify that Variable tbUnits exists
+if [expr ![info exists tbUnits]] then {
+    error "Variable tbUnits does not exist in your Config.tcl!"
+}
 
-    # Verify that Variable SimTime exists
-    if [expr ![info exists SimTime]] then {
-        puts "SimTime: Variable SimTime does not exist in your Config.tcl!"
-        after 5000
-        exit
-    }
+# Verify that Variable SimTime exists
+if [expr ![info exists SimTime]] then {
+    error "Variable SimTime does not exist in your Config.tcl!"
 }

@@ -33,8 +33,3 @@ set DoLay 0
 
 source ${PathGlobalSynLayDir}/DoIt.tcl
 
-puts "-------------------------------------------------------------"
-puts "everything was sucessfull! press the Enter-Key to continue..."
-puts "-------------------------------------------------------------"
-gets stdin
-

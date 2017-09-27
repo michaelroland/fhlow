@@ -24,21 +24,32 @@
 
 
 # we want to compile in gui, so we have to tell other tcl-files
+set PostLayoutSim 1
+set PostSynNetSim 0
+set PostSynSDFSim 1
 
-catch {
-    set PostSynNetSim 0
-    set PostSynSDFSim 1
+set PathLocalSimDir .
+set PathUnitToRoot ../../../..
+set PathGlobalSimDir ${PathUnitToRoot}/fhlow/[file tail [pwd]]
 
-    set PathLocalSimDir .
-    set PathUnitToRoot ../../../..
-    set PathGlobalSimDir ${PathUnitToRoot}/fhlow/[file tail [pwd]]
+if {1 == [catch {
+	source ${PathGlobalSimDir}/SecureIncludeConfig.tcl
+		
+	#Compile necessary Libraries if not yet compiled!
+	source ${PathGlobalSimDir}/CompileManufacturerLibraries.tcl	
 
-    do ${PathGlobalSimDir}/SecureIncludeConfig.tcl
+	# compile
+	source ${PathGlobalSimDir}/CompSim.do
+} err]} {
+	puts ""
+	puts ""
+	puts stderr "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+	puts stderr ""
+	puts stderr "$err"
+	puts stderr ""
+	puts stderr "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+}
 
-    
-    #Compile necessary Libraries if not yet compiled!
-    do ${PathGlobalSimDir}/CompileManufacturerLibraries.tcl	
-
-    # compile
-    do CompSim.do
+if [info exists Shell] then {
+    exit
 }

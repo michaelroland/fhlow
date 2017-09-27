@@ -24,22 +24,6 @@
 
 
 # we want to compile on shell, so we have to tell other tcl-files
-catch {
 set Shell 1
-set PostLayoutSim 1
 
-	
-set PathLocalSimDir .
-set PathUnitToRoot ../../../..
-set PathGlobalSimDir ${PathUnitToRoot}/fhlow/[file tail [pwd]]
-
-do ${PathGlobalSimDir}/SecureIncludeConfig.tcl
-
-    
-#Compile necessary Libraries if not yet compiled!
-do ${PathGlobalSimDir}/CompileManufacturerLibraries.tcl	
-
-
-# compile
-do CompSim.do
-}
+do PostSynNetSimGui.tcl

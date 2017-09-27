@@ -24,11 +24,7 @@
 
 
 # we want to compile and simulate on shell, so we tell it other tcl files
-set test ""
-catch {
-    set Shell 1
+set Shell 1
 
-    # compile and simulate
-    do CompSim.do
-} test;
-
+# compile and simulate
+do CompSim.do

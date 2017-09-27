@@ -24,32 +24,24 @@
 
 
 # we want to compile on shell, so we have to tell other tcl-files
-set test ""
-catch {
-    set Shell 1
-    
-    puts ""
-    puts ""
-    puts "--------------------------------------------------------------------------------"
-    puts "    Begin script for Questasim."
-    puts "--------------------------------------------------------------------------------"
-    puts ""
-    
-    # compile
-    do Comp.do
-    
-    puts ""
-    puts ""
-    puts "--------------------------------------------------------------------------------"
-    puts "    End of script for Questasim."
-    puts "--------------------------------------------------------------------------------"
-    puts ""
-    puts ""
+set Shell 1
 
-} test
+puts ""
+puts ""
+puts "--------------------------------------------------------------------------------"
+puts "    Begin script for Questasim."
+puts "--------------------------------------------------------------------------------"
+puts ""
 
-###################
-# TODO: windows/linux unterscheidung wegen exit!!!
-##################
+# compile
+do Comp.do
+
+puts ""
+puts ""
+puts "--------------------------------------------------------------------------------"
+puts "    End of script for Questasim."
+puts "--------------------------------------------------------------------------------"
+puts ""
+puts ""
 
 exit

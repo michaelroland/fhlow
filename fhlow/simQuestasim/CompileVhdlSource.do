@@ -70,8 +70,16 @@ if [info exists Packages] then {
 		    set LibraryName "work"
 		}
 		
-        puts "Compiling    package                                        grp$GrpName, pkg$PackageName"
-        catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/pkg${PackageName}/src/${PackageName}-p.vhd]" comperror
+		if {1 == [catch {
+			if [file exists ${PathUnitToRoot}/grp${GrpName}/pkg${PackageName}/src/${PackageName}-p.vhd] then {
+				puts "Compiling    package                                        grp$GrpName, pkg$PackageName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/pkg${PackageName}/src/${PackageName}-p.vhd]"
+			} else {
+				puts stderr "Missing      package                                        grp$GrpName, pkg$PackageName"
+			}
+		} err]} {
+			set comperror "$err"
+		}
     }
 }
 
@@ -96,22 +104,26 @@ if [info exists ForeignUnits] then {
         }
         set FileType [string toupper ${FileType}]
         
-        if [string is true -strict ${ForeignUnitIncludeSim}] {
-            if [string equal ${FileType} "VHDL"] {
-                puts "Compiling    foreign VHDL unit                              grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
-                catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]" comperror
-            } elseif [string equal ${FileType} "VERILOG"] {
-                puts "Compiling    foreign Verilog unit                           grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
-                catch "vlog -quiet ${VcomOptions} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]" comperror
-            } elseif [string equal ${FileType} "SYSTEMVERILOG"] {
-                puts "Compiling    foreign SystemVerilog unit                     grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
-                catch "vlog -quiet ${VcomOptions} -sv -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]" comperror
-            } else {
-                puts "Skipping     foreign unit (${FileType} unsupported in simulation)   grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
-            }
-        } else {
-            puts "Skipping     foreign unit                                   grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
-        }
+		if {1 == [catch {
+			if [string is true -strict ${ForeignUnitIncludeSim}] {
+				if [string equal ${FileType} "VHDL"] {
+					puts "Compiling    foreign VHDL unit                              grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
+					eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]"
+				} elseif [string equal ${FileType} "VERILOG"] {
+					puts "Compiling    foreign Verilog unit                           grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
+					eval "vlog -quiet ${VcomOptions} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]"
+				} elseif [string equal ${FileType} "SYSTEMVERILOG"] {
+					puts "Compiling    foreign SystemVerilog unit                     grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
+					eval "vlog -quiet ${VcomOptions} -sv -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]"
+				} else {
+					puts "Skipping     foreign unit (${FileType} unsupported in simulation)   grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
+				}
+			} else {
+				puts "Skipping     foreign unit                                   grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
+			}
+		} err]} {
+			set comperror "$err"
+		}
     }
 }
 
@@ -131,19 +143,24 @@ if [info exists Units] then {
             set LibraryName "work"
         }
             
-        #if [expr ${PostSynNetSim} == ${PostSynSDFSim}] {
-            # compiling interface packages for unit if it exists
-            if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/If${UnitName}-p.vhd] then {
-                puts "Compiling    interface package                              grp$GrpName, unit$UnitName"
-                catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/If${UnitName}-p.vhd]" comperror
-            }
-            
-            # compiling entity if exists
-            if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-e.vhd] then {
-                puts "Compiling    entity                                         grp$GrpName, unit$UnitName"
-                catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-e.vhd]" comperror
-            }
-        #}
+        #if [expr ${PostSynNetSim} == ${PostSynSDFSim}] {}
+        if [expr ![info exists PostLayoutSim]] {
+			if {1 == [catch {
+				# compiling interface packages for unit if it exists
+				if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/If${UnitName}-p.vhd] then {
+					puts "Compiling    interface package                              grp$GrpName, unit$UnitName"
+					eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/If${UnitName}-p.vhd]"
+				}
+				
+				# compiling entity if exists
+				if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-e.vhd] then {
+					puts "Compiling    entity                                         grp$GrpName, unit$UnitName"
+					eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-e.vhd]"
+				}
+			} err]} {
+				set comperror "$err"
+			}
+        }
     }
     
     # Analyze all architectures after all entities are analyzed.
@@ -158,19 +175,25 @@ if [info exists Units] then {
         }
         
         if [expr ![info exists PostLayoutSim]] {
-            if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-${ArchitectureName}-ea.vhd] then {
-                # if file for entity and architecture exists, compile it
-                puts "Compiling    entity-architecture                            grp$GrpName, unit$UnitName, $ArchitectureName"
-                catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-${ArchitectureName}-ea.vhd]" comperror
-            } elseif [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-${ArchitectureName}-eac.vhd] then {
-                # if entity architecture configuration exists, compile it
-                puts "Compiling    entity-architecture-configuration              grp$GrpName, unit$UnitName, $ArchitectureName"
-                catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-${ArchitectureName}-eac.vhd]" comperror
-            } else {
-                # compile architecture
-                puts "Compiling    architecture                                   grp$GrpName, unit$UnitName, $ArchitectureName"
-                catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-${ArchitectureName}-a.vhd]" comperror
-            }
+			if {1 == [catch {
+				if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-${ArchitectureName}-ea.vhd] then {
+					# if file for entity and architecture exists, compile it
+					puts "Compiling    entity-architecture                            grp$GrpName, unit$UnitName, $ArchitectureName"
+					eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-${ArchitectureName}-ea.vhd]"
+				} elseif [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-${ArchitectureName}-eac.vhd] then {
+					# if entity architecture configuration exists, compile it
+					puts "Compiling    entity-architecture-configuration              grp$GrpName, unit$UnitName, $ArchitectureName"
+					eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-${ArchitectureName}-eac.vhd]"
+				} elseif [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-${ArchitectureName}-a.vhd] then {
+					# compile architecture
+					puts "Compiling    architecture                                   grp$GrpName, unit$UnitName, $ArchitectureName"
+					eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-${ArchitectureName}-a.vhd]"
+				} else {
+					puts stderr "Missing      architecture                                   grp$GrpName, unit$UnitName, $ArchitectureName"
+				}
+			} err]} {
+				set comperror "$err"
+			}
         }
     }
     
@@ -185,10 +208,14 @@ if [info exists Units] then {
         }
             
         if ![info exists PostLayoutSim] {
-            if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/If${UnitName}-c.vhd] then {
-                puts "Compiling    configuration                                  grp$GrpName, unit$UnitName, $ArchitectureName"
-                catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/If${UnitName}-c.vhd]" comperror
-            }
+			if {1 == [catch {
+				if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/If${UnitName}-c.vhd] then {
+					puts "Compiling    configuration                                  grp$GrpName, unit$UnitName, $ArchitectureName"
+					eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/If${UnitName}-c.vhd]"
+				}
+			} err]} {
+				set comperror "$err"
+			}
         }
     }
 }
@@ -200,47 +227,21 @@ if [info exists Units] then {
 #############################################
 if [info exists PostLayoutSim] {
     # uses the GrpName, UnitName, LibraryName of the last analyzed unit (i.e. the last unit in $Units)
+	set PostLayoutVhdFile "${UnitName}-structure-ea.vhd"
     if [string match "Xilinx" ${ChipManufacturer}] then {
-        if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-PostLayout-a.vhd] then {
-            # if file for entity and architecture exists, compile it
-            puts "Compiling    netlist                                        grp$GrpName, unit$UnitName, PostLayout."
-            catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-PostLayout-a.vhd]" comperror
-        } else {
-            #error "${UnitName}-PostLayout-a.vhd does not exists!" 
-            puts ""
-            puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            puts "~ ${UnitName}-PostLayout-a.vhd not found! run Place & Route!"
-            puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            puts ""
-            puts ""
-            puts "--------------------------------------------------------------------------------"
-            puts "    Terminating script for Questasim because of an error."
-            puts "--------------------------------------------------------------------------------"
-            puts ""
-            puts ""
-            exit
-        } 
-     } else {
-        if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-structure-ea.vhd] then {
-            # if file for entity and architecture exists, compile it
-            puts "Compiling    netlist                                        grp$GrpName, unit$UnitName, structure."
-            catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${UnitName}-structure-ea.vhd]" comperror
-        } else {
-            #error "${UnitName}-structure-ea.vhd does not exists!" 
-            puts ""
-            puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            puts "~ ${UnitName}-structure-a.vhd not found! run Place & Route!"
-            puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            puts ""
-            puts ""
-            puts "--------------------------------------------------------------------------------"
-            puts "    Terminating script for Questasim because of an error."
-            puts "--------------------------------------------------------------------------------"
-            puts ""
-            puts ""
-            exit
-        }
-    }
+		set PostLayoutVhdFile "${UnitName}-PostLayout-a.vhd"
+	}
+	if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${PostLayoutVhdFile}] then {
+		if {1 == [catch {
+			# if file for entity and architecture exists, compile it
+			puts "Compiling    netlist                                        grp$GrpName, unit$UnitName."
+			eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${UnitName}/src/${PostLayoutVhdFile}]"
+		} err]} {
+			set comperror "$err"
+		}
+	} else {
+		error "Post-layout netlist ${PostLayoutVhdFile} does not exists! Run place & route first!"
+	} 
 }
 
 
@@ -261,14 +262,18 @@ if [info exists BhvUnits] then {
             set LibraryName "work"
         }
 
-        if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/If${BhvUnitName}-p.vhd] then {
-            puts "Compiling    bhv interface package                          grp$GrpName, unit$BhvUnitName"
-            catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/If${BhvUnitName}-p.vhd]" comperror
-        }
-	    if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-e.vhd] then {
-        	puts "Compiling    bhv entity                                     grp$GrpName, unit$BhvUnitName, $BhvUnitName"
-        	catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-e.vhd]" comperror
-    	}
+		if {1 == [catch {
+			if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/If${BhvUnitName}-p.vhd] then {
+				puts "Compiling    bhv interface package                          grp$GrpName, unit$BhvUnitName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/If${BhvUnitName}-p.vhd]"
+			}
+			if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-e.vhd] then {
+				puts "Compiling    bhv entity                                     grp$GrpName, unit$BhvUnitName, $BhvUnitName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-e.vhd]"
+			}
+		} err]} {
+			set comperror "$err"
+		}
     }
     
     # Analyze all architectures after all entities are analyzed.
@@ -282,16 +287,22 @@ if [info exists BhvUnits] then {
             set LibraryName "work"
         }
 
-	    if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-${BhvArchitectureName}-ea.vhd] then {
-		    puts "Compiling    bhv entity-architecture                        grp$GrpName, unit$BhvUnitName, $BhvArchitectureName"
-        	catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-${BhvArchitectureName}-ea.vhd]" comperror
-	    } elseif [file exists ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-${BhvArchitectureName}-eac.vhd] then {
-		    puts "Compiling    bhv entity-architecture-coniguration           grp$GrpName, unit$BhvUnitName, $BhvArchitectureName"
-        	catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-${BhvArchitectureName}-eac.vhd]" comperror
-	    } else {
-        	puts "Compiling    bhv architecture                               grp$GrpName, unit$BhvUnitName, $BhvArchitectureName"
-        	catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-${BhvArchitectureName}-a.vhd]" comperror
-	    }
+		if {1 == [catch {
+			if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-${BhvArchitectureName}-ea.vhd] then {
+				puts "Compiling    bhv entity-architecture                        grp$GrpName, unit$BhvUnitName, $BhvArchitectureName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-${BhvArchitectureName}-ea.vhd]"
+			} elseif [file exists ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-${BhvArchitectureName}-eac.vhd] then {
+				puts "Compiling    bhv entity-architecture-coniguration           grp$GrpName, unit$BhvUnitName, $BhvArchitectureName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-${BhvArchitectureName}-eac.vhd]"
+			} elseif [file exists ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-${BhvArchitectureName}-a.vhd] then {
+				puts "Compiling    bhv architecture                               grp$GrpName, unit$BhvUnitName, $BhvArchitectureName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/${BhvUnitName}-${BhvArchitectureName}-a.vhd]"
+			} else {
+				puts stderr "Missing      bhv architecture                               grp$GrpName, unit$BhvUnitName, $BhvArchitectureName"
+			}
+		} err]} {
+			set comperror "$err"
+		}
     }
     
     # Analyze all configurations - if they exist - after all architectures are analyzed.
@@ -305,13 +316,18 @@ if [info exists BhvUnits] then {
             set LibraryName "work"
         }
     
-        if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/If${BhvUnitName}-c.vhd] then {
-            puts "Compiling    configuration                                  grp$GrpName, unit$BhvUnitName, $BhvArchitectureName"
-            catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/If${BhvUnitName}-${BhvArchitectureName}-c.vhd]" comperror
-        }
+		if {1 == [catch {
+			if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/If${BhvUnitName}-c.vhd] then {
+				puts "Compiling    configuration                                  grp$GrpName, unit$BhvUnitName, $BhvArchitectureName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${BhvUnitName}/src/If${BhvUnitName}-${BhvArchitectureName}-c.vhd]"
+			}
+		} err]} {
+			set comperror "$err"
+		}
     }
 }
 
+set tbSuccess 0
 
 ########################################
 # compiling files from $ForeignTbUnits #
@@ -333,18 +349,28 @@ if [info exists ForeignTbUnits] then {
         }
         set FileType [string toupper ${FileType}]
         
-        if [string equal ${FileType} "VHDL"] {
-            puts "Compiling    foreign VHDL testbench                         grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
-            catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]" comperror
-        } elseif [string equal ${FileType} "VERILOG"] {
-            puts "Compiling    foreign Verilog testbench                      grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
-            catch "vlog -quiet ${VcomOptions} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]" comperror
-        } elseif [string equal ${FileType} "SYSTEMVERILOG"] {
-            puts "Compiling    foreign SystemVerilog testbench                grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
-            catch "vlog -quiet ${VcomOptions} -sv -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]" comperror
-        } else {
-            puts "Skipping     foreign testbench (${FileType} unsupported in simulation)    grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
-        }
+        # because we need to know which one is the desired testbench! (i.e. the last testbench in the list)
+        set tbName $ForeignUnitName   
+		
+		if {1 == [catch {
+			if [string equal ${FileType} "VHDL"] {
+				puts "Compiling    foreign VHDL testbench                         grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]"
+				set tbSuccess 1
+			} elseif [string equal ${FileType} "VERILOG"] {
+				puts "Compiling    foreign Verilog testbench                      grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
+				eval "vlog -quiet ${VcomOptions} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]"
+				set tbSuccess 1
+			} elseif [string equal ${FileType} "SYSTEMVERILOG"] {
+				puts "Compiling    foreign SystemVerilog testbench                grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
+				eval "vlog -quiet ${VcomOptions} -sv -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${ForeignUnitName}/${ForeignUnitPath}]"
+				set tbSuccess 1
+			} else {
+				puts "Skipping     foreign testbench (${FileType} unsupported in simulation)    grp$GrpName, unit$ForeignUnitName, $ForeignUnitPath"
+			}
+		} err]} {
+			set comperror "$err"
+		}
     }
 }
 
@@ -368,10 +394,14 @@ if [info exists tbUnits] then {
         # because we need to know which one is the desired testbench! (i.e. the last testbench in the list)
         set tbName $tbUnitName   
         
-        if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-e.vhd] then {
-            puts "Compiling    testbench entity                               grp$GrpName, unit$tbUnitName, $tbUnitName"
-            catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-e.vhd]" comperror
-        }
+		if {1 == [catch {
+			if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-e.vhd] then {
+				puts "Compiling    testbench entity                               grp$GrpName, unit$tbUnitName, $tbUnitName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-e.vhd]"
+			}
+		} err]} {
+			set comperror "$err"
+		}
     }
     
     # Analyze all architectures after all entities are analyzed.
@@ -387,38 +417,25 @@ if [info exists tbUnits] then {
 
     	set tbSuccess 0
         
-	    if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-ea.vhd] then {
-		    puts "Compiling    testbench entity-architecture                  grp$GrpName, unit$UnitName, $tbArchitectureName"
-        	catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-ea.vhd]" comperror
-		    set tbSuccess 1
-	    } elseif [file exists ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-eac.vhd] then {
-		    puts "Compiling    testbench entity-architecture-configuration    grp$GrpName, unit$UnitName, $tbArchitectureName"
-        	catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-eac.vhd]" comperror
-		    set tbSuccess 1
-	    } else {
-		    if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-a.vhd] then {
-           		puts "Compiling    testbench architecture                         grp$GrpName, unit$tbUnitName, $tbArchitectureName"
-          		catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-a.vhd]" comperror
-			    set tbSuccess 1
-        	} else {
-    			# signalize user that testbench was not found
-	    		if [info exists Shell] then {
-	   	    		puts ""
-	   		    	puts "Specified Testbench was not found!"
-	   			    puts "Check Config.tcl!"
-    	   			puts ""
-	    			set tbSuccess 0	
-		    	} else {
-			    	puts ""
-	   			    puts "Specified Testbench was not found!"
-    	   			puts "Check Config.tcl!"
-	       			puts ""
-		    		tk_messageBox -message "No Architecture found for your testbench!\nCheck Config.tcl!" \
-			    		-title "Testbench Warning" -icon warning
-				    set tbSuccess 0	
-			    }
-           	}
-        }
+		if {1 == [catch {
+			if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-ea.vhd] then {
+				puts "Compiling    testbench entity-architecture                  grp$GrpName, unit$UnitName, $tbArchitectureName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-ea.vhd]"
+				set tbSuccess 1
+			} elseif [file exists ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-eac.vhd] then {
+				puts "Compiling    testbench entity-architecture-configuration    grp$GrpName, unit$UnitName, $tbArchitectureName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-eac.vhd]"
+				set tbSuccess 1
+			} elseif [file exists ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-a.vhd] then {
+				puts "Compiling    testbench architecture                         grp$GrpName, unit$tbUnitName, $tbArchitectureName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/tb${tbUnitName}-${tbArchitectureName}-a.vhd]"
+				set tbSuccess 1
+			} else {
+				puts stderr "Missing      testbench architecture                         grp$GrpName, unit$tbUnitName, $tbArchitectureName"
+			}
+		} err]} {
+			set comperror "$err"
+		}
     }
     # Analyze all configurations - if they exist - after all architectures are analyzed.
     foreach {tbUnit} $tbUnits {
@@ -431,10 +448,14 @@ if [info exists tbUnits] then {
             set LibraryName "work"
         }
         
-        if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/Iftb${tbUnitName}-c.vhd] then {
-            puts "Compiling    testbench configuration                        grp$GrpName, unit$tbUnitName, $tbArchitectureName"
-            catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/Iftb${tbUnitName}-${tbArchitectureName}-c.vhd]" comperror
-        }
+		if {1 == [catch {
+			if [file exists ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/Iftb${tbUnitName}-c.vhd] then {
+				puts "Compiling    testbench configuration                        grp$GrpName, unit$tbUnitName, $tbArchitectureName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/unit${tbUnitName}/src/Iftb${tbUnitName}-${tbArchitectureName}-c.vhd]"
+			}
+		} err]} {
+			set comperror "$err"
+		}
     }
 }
 
@@ -457,8 +478,14 @@ if [info exists tbPkgs] then {
         # because we need to know which one is the desired testbench! (i.e. the last testbench in the list)
         set tbName tbPkgName
 
-        puts "Compiling    pkg testbench entity                           grp$GrpName, pkg$tbPkgName"
-        catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/pkg${tbPkgName}/src/tb${tbUnitName}-e.vhd]" comperror
+		if {1 == [catch {
+			if [file exists ${PathUnitToRoot}/grp${GrpName}/pkg${tbPkgName}/src/tb${tbPkgName}-e.vhd] then {
+				puts "Compiling    pkg testbench entity                             grp$GrpName, pkg$tbPkgName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/pkg${tbPkgName}/src/tb${tbPkgName}-e.vhd]"
+			}
+		} err]} {
+			set comperror "$err"
+		}
     }
     
     # Analyze all architectures after all entities are analyzed.
@@ -472,23 +499,30 @@ if [info exists tbPkgs] then {
             set LibraryName "work"
         }
         
-        puts "Compiling    architecture                                   grp$GrpName, pkg$tbPkgName, $tbArchitectureName"
-        catch "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/pkg${tbPkgName}/src/tb${tbUnitName}-${tbArchitectureName}-a.vhd]" comperror
-
+    	set tbSuccess 0
+		
+		if {1 == [catch {
+			if [file exists ${PathUnitToRoot}/grp${GrpName}/pkg${tbPkgName}/src/tb${tbPkgName}-${tbArchitectureName}-ea.vhd] then {
+				puts "Compiling    pkg testbench entity-architecture                grp$GrpName, pkg$UnitName, $tbArchitectureName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/pkg${tbPkgName}/src/tb${tbPkgName}-${tbArchitectureName}-ea.vhd]"
+				set tbSuccess 1
+			} elseif [file exists ${PathUnitToRoot}/grp${GrpName}/pkg${tbPkgName}/src/tb${tbPkgName}-${tbArchitectureName}-eac.vhd] then {
+				puts "Compiling    pkg testbench entity-architecture-configuration  grp$GrpName, pkg$UnitName, $tbArchitectureName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/pkg${tbPkgName}/src/tb${tbPkgName}-${tbArchitectureName}-eac.vhd]"
+				set tbSuccess 1
+			} elseif [file exists ${PathUnitToRoot}/grp${GrpName}/pkg${tbPkgName}/src/tb${tbPkgName}-${tbArchitectureName}-a.vhd] then {
+				puts "Compiling    pkg testbench architecture                       grp$GrpName, pkg$tbPkgName, $tbArchitectureName"
+				eval "vcom -quiet ${VcomOptions} ${VcomVhdlInputVersion} -work ${LibraryName} [file normalize ${PathUnitToRoot}/grp${GrpName}/pkg${tbPkgName}/src/tb${tbPkgName}-${tbArchitectureName}-a.vhd]"
+				set tbSuccess 1
+			} else {
+				puts stderr "Missing      pkg testbench architecture                       grp$GrpName, pkg$tbPkgName, $tbArchitectureName"
+			}
+		} err]} {
+			set comperror "$err"
+		}
     }
 }
 
 if [expr  {${comperror}!=""}] then {
-    puts ""
-    puts ""
-    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    puts "~ There were several errors during compilation!"
-    puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    puts ""
-    puts ""
-    puts "--------------------------------------------------------------------------------"
-    puts "    Terminating script for Questasim because of an compilation error."
-    puts "--------------------------------------------------------------------------------"
-    puts ""
-    exit    
+    error "Compilation failed due to errors!\n$comperror"
 }

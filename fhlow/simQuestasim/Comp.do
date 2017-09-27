@@ -22,42 +22,34 @@
 #* along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #*******************************************************************************
 
-catch {
+#Setting Pathes for tools and files
+set PathLocalSimDir .
+set PathUnitToRoot ../../../..
+set PathGlobalSimDir ${PathUnitToRoot}/fhlow/[file tail [pwd]]
 
-    #Setting Pathes for tools and files
-    set PathLocalSimDir .
-    set PathUnitToRoot ../../../..
-    set PathGlobalSimDir ${PathUnitToRoot}/fhlow/[file tail [pwd]]
+if {1 == [catch {
+	source ${PathGlobalSimDir}/../Banner.tcl
+	puts ""
+	puts ""
 
-    source ${PathGlobalSimDir}/../Banner.tcl
-    puts ""
-    puts ""
+	source ${PathGlobalSimDir}/SecureIncludeConfig.tcl
 
-    source ${PathGlobalSimDir}/SecureIncludeConfig.tcl
+	puts "---------------------------- start of compilation ------------------------------"
 
-    #look for testbench
-    if [info exists tbUnits] then {                                                           
-        puts "---------------------------- start of compilation ------------------------------"
-        
-        source ${PathGlobalSimDir}/CompileVhdlSource.do
-        source ${PathGlobalSimDir}/UnsetVariables.tcl
-        
-        puts "----------------------------- end of compilation -------------------------------"
-        puts ""
-        puts ""
+	source ${PathGlobalSimDir}/CompileVhdlSource.do
 
-        # signalize configuration is ok
-        set ConfigError 0
-
-    } else {
-        # look if shell or gui is used
-        if [info exists Shell] then {
-            puts "Set tbUnits in Config.tcl at least to {}! Configuration Error!"
-        } else {
-            tk_messageBox -message "Set tbUnits in Config.tcl at least to {}!" -title "Configuration Error" -icon error
-        }
-
-        # signalize configuration error
-        set ConfigError 1
-    }
-} test
+	puts "----------------------------- end of compilation -------------------------------"
+	puts ""
+	puts ""
+} err]} {
+	puts ""
+	puts ""
+	puts stderr "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+	puts stderr ""
+	puts stderr "$err"
+	puts stderr ""
+	puts stderr "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+	if [info exists Shell] then {
+		exit
+	}
+}

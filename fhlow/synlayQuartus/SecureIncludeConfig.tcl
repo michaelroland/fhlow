@@ -23,18 +23,28 @@
 #*******************************************************************************
 
 
-#searching for config.tcl on root level
-if [file exists ${PathLocalSynLayDir}/${PathUnitToRoot}/Config.tcl] then {
-    set DoingSynthesis 0
-    source ${PathLocalSynLayDir}/${PathUnitToRoot}/Config.tcl
+set CurrentConfigIncludeFile ""
+if {1 == [catch {
+    #searching for config.tcl on root level
+    set CurrentConfigIncludeFile ${PathLocalSynLayDir}/${PathUnitToRoot}/Config.tcl
+    if [file exists $CurrentConfigIncludeFile] then {
+        source $CurrentConfigIncludeFile
+    }
+    #searching for config.tcl on group level
+    set CurrentConfigIncludeFile ${PathLocalSynLayDir}/../../../Config.tcl
+    if [file exists $CurrentConfigIncludeFile] then {
+        source $CurrentConfigIncludeFile
+    }
+    #searching for config.tcl on unit level
+    set CurrentConfigIncludeFile ${PathLocalSynLayDir}/../../Config.tcl
+    if [file exists $CurrentConfigIncludeFile] then {
+        source $CurrentConfigIncludeFile
+    } else {
+        error "Configuration file [file normalize $CurrentConfigIncludeFile] not found!"
+    }
+} err]} {
+    error "Failed to include configuration file [file normalize $CurrentConfigIncludeFile]!\n$err"
 }
-#searching for config.tcl on group level
-if [file exists ${PathLocalSynLayDir}/../../../Config.tcl] then {
-    source ${PathLocalSynLayDir}/../../../Config.tcl
-}
-#doing config.tcl in unit
-source ${PathLocalSynLayDir}/../../Config.tcl
-
 
 # VHDL input version
 if [expr ![info exists VhdlInputVersion]] then {
@@ -58,9 +68,7 @@ if { ${VhdlInputVersion} == 1987 } then {
 #} elseif { ${VhdlInputVersion} == 2012 } then {
 #    set SynVhdlInputVersion "VHDL_2012"
 } else {
-    puts "VhdlInputVersion: Version \"${VhdlInputVersion}\" not supported!"
-    after 5000
-    exit
+    error "VhdlInputVersion \"${VhdlInputVersion}\" is not a supported version!"
 }
 
     
@@ -68,70 +76,50 @@ if { ${VhdlInputVersion} == 1987 } then {
 
 # Verify that Variable Packages exists
 if [expr ![info exists Packages]] then {
-    puts "Packages: Variable Packages does not exist in your Config.tcl!"
-    after 5000
-    exit
+    error "Variable Packages does not exist in your Config.tcl!"
 }
 
 # Verify that Variable Units exists
 if [expr ![info exists Units]] then {
-    puts "Units: Variable Units does not exist in your Config.tcl!"
-    after 5000
-    exit
+    error "Variable Units does not exist in your Config.tcl!"
 }
 
 # Verify that Variable ForeignUnits exists
 if [expr ![info exists ForeignUnits]] then {
-    puts "ForeignUnits: Variable ForeignUnits does not exist in your Config.tcl!"
-    after 5000
-    exit
+    error "Variable ForeignUnits does not exist in your Config.tcl!"
 }
 
 # Verify that Variable ChipManufacturer exists
 if [expr ![info exists ChipManufacturer]] then {
-    puts "ChipManufacturer: Variable ChipManufacturer does not exist in your Config.tcl!"
-    after 5000
-    exit
+    error "Variable ChipManufacturer does not exist in your Config.tcl!"
 }
 
 # Verify that Variable ChipFamily exists
 if [expr ![info exists ChipFamily]] then {
-    puts "ChipFamily: Variable ChipFamily does not exist in your Config.tcl!"
-    after 5000
-    exit
+    error "Variable ChipFamily does not exist in your Config.tcl!"
 }
 
 # Verify that Variable ChipPart exists
 if [expr ![info exists ChipPart]] then {
-    puts "ChipPart: Variable ChipPart does not exist in your Config.tcl!"
-    after 5000
-    exit
+    error "Variable ChipPart does not exist in your Config.tcl!"
 }
 
 # Verify that Variable ChipPackage exists
 if [expr ![info exists ChipPackage]] then {
-    puts "ChipPackage: Variable ChipPackage does not exist in your Config.tcl!"
-    after 5000
-    exit
+    error "Variable ChipPackage does not exist in your Config.tcl!"
 }
 
 # Verify that Variable ChipSpeedgrade exists
 if [expr ![info exists ChipSpeedgrade]] then {
-    puts "ChipSpeedgrade: Variable ChipSpeedgrade does not exist in your Config.tcl!"
-    after 5000
-    exit
+    error "Variable ChipSpeedgrade does not exist in your Config.tcl!"
 }
 
 # Verify that Variable ChipFrequency exists
 if [expr ![info exists ChipFrequency]] then {
-    puts "ChipFrequency: Variable ChipFrequency does not exist in your Config.tcl!"
-    after 5000
-    exit
+    error "Variable ChipFrequency does not exist in your Config.tcl!"
 }
 
 # Verify that Variable Pins exists
 if [expr ![info exists Pins]] then {
-    puts "Pins: Variable Pins does not exist in your Config.tcl!"
-    after 5000
-    exit
+    error "Variable Pins does not exist in your Config.tcl!"
 }
