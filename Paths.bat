@@ -82,8 +82,8 @@ if not exist "%FHLOW_USER_PATHCFG%" (
         echo rem *******************************************************************************
         echo rem * Quartus
         echo rem * 
-        echo rem set MY_QUARTUS_PATH=%QUARTUS_ROOTDIR%
         echo rem set MY_QUARTUS_PATH=%%QUARTUS_ROOTDIR%%
+        echo rem set MY_QUARTUS_PATH=%QUARTUS_ROOTDIR%
         echo rem set MY_QUARTUS_PATH=C:\intelFPGA\18.1\quartus
         echo rem set MY_QUARTUS_PATH=ignore
         echo rem * 
@@ -117,6 +117,9 @@ if exist "%FHLOW_USER_PATHCFG%" call "%FHLOW_USER_PATHCFG%"
 rem *******************************************************************************
 rem *****  Automatic Executable Lookup  *******************************************
 rem *******************************************************************************
+
+setlocal enabledelayedexpansion
+
 
 rem *******************************************************************************
 rem * Questasim/Modelsim
@@ -165,6 +168,10 @@ if not exist "%MY_QUESTASIM_EXEC_QUESTASIM%" (
     echo.
     pause
 )
+echo - Main path: %MY_QUESTASIM_PATH%
+echo - Executable path: %MY_QUESTASIM_EXEC_DIR%
+echo - Main executable path: %MY_QUESTASIM_EXEC_QUESTASIM%
+echo - VSIM executable path: %MY_QUESTASIM_EXEC_VSIM%
 :questasimskip
 rem *******************************************************************************
 
@@ -184,22 +191,24 @@ set MY_QUARTUS_EXEC_QUARTUS=
 set MY_QUARTUS_EXEC_SH=
 for /D %%i in (%MY_QUARTUS_SEARCH%) do (
     for /D %%j in ("%%i\bin64" "%%i\bin32" "%%i\bin" "%%i") do (
-        if exist "%%j\quartus.exe" set MY_QUARTUS_EXEC_QUARTUS=%%j\quartus.exe
-        if not "%MY_QUARTUS_EXECUTABLE_MAIN%" == "" (
-            if exist "%%j\%MY_QUARTUS_EXECUTABLE_MAIN%" set MY_QUARTUS_EXEC_QUARTUS=%%j\%MY_QUARTUS_EXECUTABLE_MAIN%
-        )
-        if exist "%%j\quartus_sh.exe" set MY_QUARTUS_EXEC_SH=%%j\quartus_sh.exe
-        if not "%MY_QUARTUS_EXECUTABLE_SHELL%" == "" (
-            if exist "%%j\%MY_QUARTUS_EXECUTABLE_SHELL%" set MY_QUARTUS_EXEC_SH=%%j\%MY_QUARTUS_EXECUTABLE_SHELL%
-        )
-        rem Make sure that we find both paths from the same directory
-        if "!MY_QUARTUS_EXEC_QUARTUS!" == "" set MY_QUARTUS_EXEC_QUARTUS=
-        if "!MY_QUARTUS_EXEC_SH!" == "" set MY_QUARTUS_EXEC_SH=
-        rem Set the resulting Quartus paths and exit the loop
-        if not "!MY_QUARTUS_EXEC_QUARTUS!" == "" (
-            set MY_QUARTUS_PATH=%%i
-            set MY_QUARTUS_EXEC_DIR=%%j
-            goto :quartusresolved
+        if exist "%%j" (
+            if exist "%%j\quartus.exe" set MY_QUARTUS_EXEC_QUARTUS=%%j\quartus.exe
+            if not "%MY_QUARTUS_EXECUTABLE_MAIN%" == "" (
+                if exist "%%j\%MY_QUARTUS_EXECUTABLE_MAIN%" set MY_QUARTUS_EXEC_QUARTUS=%%j\%MY_QUARTUS_EXECUTABLE_MAIN%
+            )
+            if exist "%%j\quartus_sh.exe" set MY_QUARTUS_EXEC_SH=%%j\quartus_sh.exe
+            if not "%MY_QUARTUS_EXECUTABLE_SHELL%" == "" (
+                if exist "%%j\%MY_QUARTUS_EXECUTABLE_SHELL%" set MY_QUARTUS_EXEC_SH=%%j\%MY_QUARTUS_EXECUTABLE_SHELL%
+            )
+            rem Make sure that we find both paths from the same directory
+            if "!MY_QUARTUS_EXEC_QUARTUS!" == "" set MY_QUARTUS_EXEC_SH=
+            if "!MY_QUARTUS_EXEC_SH!" == "" set MY_QUARTUS_EXEC_QUARTUS=
+            rem Set the resulting Quartus paths and exit the loop
+            if not "!MY_QUARTUS_EXEC_QUARTUS!" == "" (
+                set MY_QUARTUS_PATH=%%i
+                set MY_QUARTUS_EXEC_DIR=%%j
+                goto :quartusresolved
+            )
         )
     )
 )
@@ -220,6 +229,6 @@ if not exist "%MY_QUARTUS_EXEC_QUARTUS%" (
     echo.
     pause
 )
-rem set QUARTUS_ROOTDIR=%MY_QUARTUS_PATH%
+set QUARTUS_ROOTDIR=%MY_QUARTUS_PATH%
 :quartusskip
 rem *******************************************************************************
