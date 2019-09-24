@@ -118,12 +118,10 @@ rem ****************************************************************************
 rem *****  Automatic Executable Lookup  *******************************************
 rem *******************************************************************************
 
-setlocal enabledelayedexpansion
-
-
 rem *******************************************************************************
 rem * Questasim/Modelsim
 rem * 
+setlocal enabledelayedexpansion
 if "%MY_QUESTASIM_PATH%" == "ignore" goto :questasimskip
 set MY_QUESTASIM_SEARCH="C:\questasim*" "C:\modelsim*" "C:\modeltech*" D:\questasim*" "D:\modelsim*" "D:\modeltech*" E:\questasim*" "E:\modelsim*" "E:\modeltech*" "%QUARTUS_ROOTDIR%\..\modelsim*" "%MY_QUARTUS_PATH%\..\modelsim*"
 if not "%MY_QUESTASIM_PATH%" == "" set MY_QUESTASIM_SEARCH=%MY_QUESTASIM_PATH%
@@ -168,16 +166,19 @@ if not exist "%MY_QUESTASIM_EXEC_QUESTASIM%" (
     echo.
     pause
 )
-echo - Main path: %MY_QUESTASIM_PATH%
-echo - Executable path: %MY_QUESTASIM_EXEC_DIR%
-echo - Main executable path: %MY_QUESTASIM_EXEC_QUESTASIM%
-echo - VSIM executable path: %MY_QUESTASIM_EXEC_VSIM%
+endlocal && (
+    set MY_QUESTASIM_PATH=%MY_QUESTASIM_PATH%
+    set MY_QUESTASIM_EXEC_DIR=%MY_QUESTASIM_EXEC_DIR%
+    set MY_QUESTASIM_EXEC_QUESTASIM=%MY_QUESTASIM_EXEC_QUESTASIM%
+    set MY_QUESTASIM_EXEC_VSIM=%MY_QUESTASIM_EXEC_VSIM%
+)
 :questasimskip
 rem *******************************************************************************
 
 rem *******************************************************************************
 rem * Quartus
 rem * 
+setlocal enabledelayedexpansion
 if "%MY_QUARTUS_PATH%" == "ignore" goto :quartusskip
 set MY_QUARTUS_SEARCH="%QUARTUS_ROOTDIR%" "%QUARTUS_ROOTDIR%\..\quartus" "C:\intelfpga*" "C:\altera*" "D:\intelfpga*" "D:\altera*" "E:\intelfpga*" "E:\altera*"
 for /D %%i in (%MY_QUARTUS_SEARCH%) do (
@@ -229,6 +230,12 @@ if not exist "%MY_QUARTUS_EXEC_QUARTUS%" (
     echo.
     pause
 )
-set QUARTUS_ROOTDIR=%MY_QUARTUS_PATH%
+endlocal && (
+    set MY_QUARTUS_PATH=%MY_QUARTUS_PATH%
+    set QUARTUS_ROOTDIR=%MY_QUARTUS_PATH%
+    set MY_QUARTUS_EXEC_DIR=%MY_QUARTUS_EXEC_DIR%
+    set MY_QUARTUS_EXEC_QUARTUS=%MY_QUARTUS_EXEC_QUARTUS%
+    set MY_QUARTUS_EXEC_SH=%MY_QUARTUS_EXEC_SH%
+)
 :quartusskip
 rem *******************************************************************************
